@@ -38,6 +38,7 @@ public class BaseActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
     public BaseActivity(String TAG){
@@ -83,6 +84,7 @@ public class BaseActivity extends AppCompatActivity {
         if (dbHelper != null) {
             OpenHelperManager.releaseHelper();
             dbHelper = null;
+
         }
     }
 

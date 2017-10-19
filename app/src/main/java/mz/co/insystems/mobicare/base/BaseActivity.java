@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import mz.co.insystems.trackingservice.R;
-import mz.co.insystems.trackingservice.db.DatabaseHelper;
 
 /**
  * Created by Voloide Tamele on 9/19/2017.
@@ -86,6 +85,7 @@ public class BaseActivity extends AppCompatActivity {
             dbHelper = null;
         }
     }
+
 
     protected DatabaseHelper getHelper() {
         if (dbHelper == null) {

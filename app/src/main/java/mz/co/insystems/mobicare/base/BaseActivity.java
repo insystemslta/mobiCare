@@ -42,8 +42,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public BaseActivity(String TAG){
-        this.TAG = TAG;
+    public BaseActivity(){
 
     }
 

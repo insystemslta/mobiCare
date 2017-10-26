@@ -1,7 +1,6 @@
 package mz.co.insystems.mobicare.model.entidade.user;
 
 import android.databinding.Bindable;
-import android.location.Location;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -13,23 +12,25 @@ import mz.co.insystems.mobicare.util.Utilities;
 /**
  * Created by Voloide Tamele on 10/20/2017.
  */
-@DatabaseTable(tableName = User.TABLE_NAME, daoClass = UserDAO.class)
+@DatabaseTable(tableName = User.TABLE_NAME, daoClass = UserDao.class)
 public class User extends Pessoa{
-    public static final String TABLE_NAME                       = "user";
-    public static final String COLUMN_USER_ID 				    = "id";
-    public static final String COLUMN_USER_LOGIN_NUMBER		    = "user_name";
-    public static final String COLUMN_USER_PASSWORD 		    = "password";
-    public static final String COLUMN_USER_STATE 			    = "state_id";
-    public static final String COLUMN_USER_TYPE 			    = "user_type_id";
+    public static final String TABLE_NAME           = "user";
+    public static final String COLUMN_ID 			= "id";
+    public static final String COLUMN_USER_NAME		= "user_name";
+    public static final String COLUMN_PASSWORD 		= "password";
+    public static final String COLUMN_ESTADO 		= "estado";
+    public static final String COLUMN_TYPE 			= "user_type_id";
 
     private static final long serialVersionUID = 1L;
 
-    @DatabaseField(columnName = COLUMN_USER_ID, id = true, generatedId = false)
+    @DatabaseField(columnName = COLUMN_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField(columnName = COLUMN_USER_NAME)
     private String userName;
+    @DatabaseField
     private String password;
+    @DatabaseField(columnName = COLUMN_ESTADO)
     private boolean active;
-    private Location location;
 
     public User(long id) {
         this.id = id;
@@ -51,14 +52,6 @@ public class User extends Pessoa{
     public void setId(long id) {
         this.id = id;
         notifyPropertyChanged(BR.id);
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public boolean isActive() {
@@ -103,8 +96,6 @@ public class User extends Pessoa{
         else
             this.password = password;
         notifyPropertyChanged(BR.password);
-
-
     }
 }
 

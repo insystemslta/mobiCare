@@ -82,5 +82,6 @@ public class Farmaco extends BaseVO {
 
     public void setGrupoFarmaco(GrupoFarmaco grupoFarmaco) {
         this.grupoFarmaco = grupoFarmaco;
+        notifyPropertyChanged(BR.grupoFarmaco);
     }
 }

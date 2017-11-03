@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * Created by Voloide Tamele on 10/2/2017.
  */
-public interface UserDao extends Dao<User, Integer> {
+interface UserDao extends Dao<User, Integer> {
 
     public boolean authenticate(User user) throws SQLException;
 

@@ -6,20 +6,24 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import mz.co.insystems.mobicare.BR;
+import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.entidade.Pessoa;
+import mz.co.insystems.mobicare.model.entidade.farmacia.Farmacia;
 import mz.co.insystems.mobicare.util.Utilities;
 
 /**
  * Created by Voloide Tamele on 10/20/2017.
  */
 @DatabaseTable(tableName = User.TABLE_NAME, daoClass = UserDao.class)
-public class User extends Pessoa{
+public class User extends BaseVO {
     public static final String TABLE_NAME           = "user";
     public static final String COLUMN_ID 			= "id";
     public static final String COLUMN_USER_NAME		= "user_name";
     public static final String COLUMN_PASSWORD 		= "password";
     public static final String COLUMN_ESTADO 		= "estado";
     public static final String COLUMN_TYPE 			= "user_type_id";
+    public static final String COLUMN_PESSOA_ID			= "pessoa_id";
+    public static final String COLUMN_FARMACIA_ID 			= "farmacia_id";
 
     private static final long serialVersionUID = 1L;
 
@@ -31,6 +35,13 @@ public class User extends Pessoa{
     private String password;
     @DatabaseField(columnName = COLUMN_ESTADO)
     private boolean active;
+
+    @DatabaseField(columnName = COLUMN_PESSOA_ID, foreign = true, foreignAutoRefresh = true)
+    private Pessoa pessoa;
+
+    @DatabaseField(columnName = COLUMN_FARMACIA_ID, foreign = true, foreignAutoRefresh = true)
+    private Farmacia farmacia;
+
 
     public User(long id) {
         this.id = id;
@@ -96,6 +107,24 @@ public class User extends Pessoa{
         else
             this.password = password;
         notifyPropertyChanged(BR.password);
+    }
+    @Bindable
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+       // notifyPropertyChanged(BR.pessoa);
+    }
+    @Bindable
+    public Farmacia getFarmacia() {
+        return farmacia;
+    }
+
+    public void setFarmacia(Farmacia farmacia) {
+        this.farmacia = farmacia;
+      // notifyPropertyChanged(BR.farmacia);
     }
 }
 

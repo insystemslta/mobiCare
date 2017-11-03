@@ -6,8 +6,9 @@ import com.j256.ormlite.field.DatabaseField;
 
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
-import mz.co.insystems.mobicare.model.entidade.Endereco.Endereco;
+import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
 import mz.co.insystems.mobicare.model.entidade.contacto.Contact;
+import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
 
 /**
  * Created by Voloide Tamele on 10/20/2017.

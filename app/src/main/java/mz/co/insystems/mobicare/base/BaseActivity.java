@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.model.entidade.user.User;
+import mz.co.insystems.mobicare.util.Utilities;
 
 
 /**
@@ -23,6 +26,7 @@ import mz.co.insystems.mobicare.R;
 public class BaseActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper = null;
     protected String TAG;
+    private User currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -42,8 +46,18 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+
+
     public BaseActivity(){
 
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     @Override

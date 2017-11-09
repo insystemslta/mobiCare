@@ -4,19 +4,22 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 
+import org.json.JSONObject;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
-import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
-import mz.co.insystems.mobicare.model.entidade.contacto.Contact;
+import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
 
 /**
  * Created by Voloide Tamele on 10/20/2017.
  */
 public class Pessoa extends BaseVO {
-    public static final String COLUMN_NAME 	        = "name";
-    public static final String COLUMN_SURNAME       = "surname";
-    public static final String COLUMN_CONTACT_ID 	= "contact_id";
+    public static final String TABLE_NAME 	        = "pessoa";
+    public static final String COLUMN_ID 	        = "id";
+    public static final String COLUMN_NAME 	        = "nome";
+    public static final String COLUMN_SURNAME       = "apelido";
+    public static final String COLUMN_CONTACT_ID 	= "contacto_id";
     public static final String COLUMN_ENDERECO_ID 	= "endereco_id";
 
     private static final long serialVersionUID = 1L;
@@ -27,7 +30,7 @@ public class Pessoa extends BaseVO {
     @DatabaseField
     private String surname;
     @DatabaseField(columnName = COLUMN_CONTACT_ID, foreign = true, foreignAutoRefresh = true)
-    private Contact contact;
+    private Contacto contacto;
     @DatabaseField(columnName = COLUMN_ENDERECO_ID, foreign = true, foreignAutoRefresh = true)
     private Endereco endereco;
 
@@ -73,12 +76,16 @@ public class Pessoa extends BaseVO {
     }
 
     @Bindable
-    public Contact getContact() {
-        return contact;
+    public Contacto getContacto() {
+        return contacto;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
-        notifyPropertyChanged(BR.contact);
+    public void setContacto(Contacto contacto) {
+        this.contacto = contacto;
+        notifyPropertyChanged(BR.contacto);
+    }
+
+    public static Pessoa convertFromJSON(JSONObject jsonObject) {
+        return null;
     }
 }

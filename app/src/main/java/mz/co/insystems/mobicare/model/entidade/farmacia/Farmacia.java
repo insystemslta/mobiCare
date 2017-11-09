@@ -5,12 +5,13 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import mz.co.insystems.mobicare.base.BaseVO;
-import mz.co.insystems.mobicare.model.entidade.contacto.Contact;
+import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
-import mz.co.insystems.mobicare.model.entidade.endereco.bairro.Bairro;
 import mz.co.insystems.mobicare.model.entidade.farmacia.servicos.Servico;
 
 /**
@@ -34,15 +35,15 @@ public class Farmacia extends BaseVO {
     private Endereco endereco;
 
     @DatabaseField(columnName = COLUMN_FARMACIA_CONTACTO, foreign = true, foreignAutoRefresh = true)
-    private Contact contact;
+    private Contacto contacto;
     @ForeignCollectionField
     private List<Servico> servicos;
-    public Farmacia(long id, String nome, int estado, Endereco endereco, Contact contact) {
+    public Farmacia(long id, String nome, int estado, Endereco endereco, Contacto contacto) {
         this.id = id;
         this.nome = nome;
         this.estado = estado;
         this.endereco = endereco;
-        this.contact = contact;
+        this.contacto = contacto;
     }
     public Farmacia() {
 
@@ -54,7 +55,7 @@ public class Farmacia extends BaseVO {
                 ", nome='" + nome + '\'' +
                 ", estado=" + estado +
                 ", endereco=" + endereco +
-                ", contact=" + contact +
+                ", contacto=" + contacto +
                 '}';
     }
 
@@ -90,12 +91,12 @@ public class Farmacia extends BaseVO {
         this.endereco = endereco;
     }
     @Bindable
-    public Contact getContact() {
-        return contact;
+    public Contacto getContacto() {
+        return contacto;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
+    public void setContacto(Contacto contacto) {
+        this.contacto = contacto;
     }
 
     public List<Servico> getServicos() {
@@ -104,5 +105,9 @@ public class Farmacia extends BaseVO {
 
     public void setServicos(List<Servico> servicos) {
         this.servicos = servicos;
+    }
+
+    public static Farmacia convertFromJSON(JSONObject jsonObject) {
+        return null;
     }
 }

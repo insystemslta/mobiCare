@@ -5,6 +5,9 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.entidade.Pessoa;
@@ -115,7 +118,7 @@ public class User extends BaseVO {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
-       // notifyPropertyChanged(BR.pessoa);
+        notifyPropertyChanged(BR.pessoa);
     }
     @Bindable
     public Farmacia getFarmacia() {
@@ -124,7 +127,31 @@ public class User extends BaseVO {
 
     public void setFarmacia(Farmacia farmacia) {
         this.farmacia = farmacia;
-      // notifyPropertyChanged(BR.farmacia);
+        notifyPropertyChanged(BR.farmacia);
+    }
+
+    public JSONObject genarateJsonObject() {
+        JSONObject userJsonObject = new JSONObject();
+        try {
+            userJsonObject.put(User.COLUMN_USER_NAME, this.getUserName());
+            userJsonObject.put(User.COLUMN_PASSWORD, this.getPassword());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return userJsonObject;
+    }
+
+    public static User convertFromJSON(JSONObject userJson, boolean isFarmacia) throws JSONException {
+        User user = new User();
+        user.setId(userJson.getInt(COLUMN_ID));
+        user.setUserName(userJson.getString(User.COLUMN_USER_NAME));
+        user.setNotCryptedPassword(userJson.getString(User.COLUMN_PASSWORD));
+        if (!isFarmacia) {
+            user.setPessoa(Pessoa.convertFromJSON(userJson.getJSONObject(Pessoa.TABLE_NAME)));
+        }else {
+            user.setFarmacia(Farmacia.convertFromJSON(userJson.getJSONObject(Farmacia.TABLE_NAME_FARMACIA)));
+        }
+        return user;
     }
 }
 

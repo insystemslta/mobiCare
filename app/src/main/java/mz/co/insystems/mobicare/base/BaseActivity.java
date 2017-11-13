@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.model.entidade.user.User;
-import mz.co.insystems.mobicare.util.Utilities;
 
 
 /**
@@ -105,7 +103,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected DatabaseHelper getHelper() {
         if (dbHelper == null) {
-            dbHelper = OpenHelperManager.getHelper(this,DatabaseHelper.class);
+            dbHelper = OpenHelperManager.getHelper(BaseActivity.this,DatabaseHelper.class);
         }
         return dbHelper;
     }

@@ -9,19 +9,14 @@ import android.widget.Button;
 
 import com.android.volley.Request;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.sql.SQLException;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.base.BaseActivity;
-import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.user.User;
 import mz.co.insystems.mobicare.model.entidade.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
-import mz.co.insystems.mobicare.util.Utilities;
 
 public class UserRegistrationActivity extends BaseActivity {
     private UserDao mUserDao;
@@ -30,11 +25,11 @@ public class UserRegistrationActivity extends BaseActivity {
 
     public UserRegistrationActivity() {
         super();
-        try {
+        /*try {
             mUserDao = getHelper().getUserDao();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -42,7 +37,19 @@ public class UserRegistrationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
 
+        final Button sync 			= (Button) 	 findViewById(R.id.btnSync);
 
+        sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                setCurrentUser(new User());
+                getCurrentUser().setUserName("844441662");
+                getCurrentUser().setPassword("1000");
+                doUserSync();
+
+            }
+        });
     }
 
     public void onClickButton(View view) {
@@ -62,14 +69,15 @@ public class UserRegistrationActivity extends BaseActivity {
         syncProgress.setCancelable(true);
         final MobicareSyncService service = new MobicareSyncService();
         Uri.Builder uri =  service.initServiceUri();
-        uri.appendPath(MobicareSyncService.URL_SERVICE_USER_CREATE);
+        uri.appendPath(MobicareSyncService.SERVICE_ENTITY_USER);
+        uri.appendPath(MobicareSyncService.SERVICE_CREATE);
         final String url = uri.build().toString();
 
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-               service.makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().genarateJsonObject().toString(), getCurrentUser(), new VolleyResponseListener() {
+               service.makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().genarateJsonObject(), getCurrentUser(), new VolleyResponseListener() {
                    @Override
                    public void onError(String message) {
                        syncProgress.dismiss();
@@ -79,10 +87,14 @@ public class UserRegistrationActivity extends BaseActivity {
                    @Override
                    public void onResponse(JSONObject response, int myStatusCode) {
                        syncProgress.dismiss();
-                       Log.d("tag",response.toString());
+                       printUser(response);
                    }
                });
             }
         }).start();
+    }
+
+    private void printUser(JSONObject response) {
+        Log.d("tag",response.toString());
     }
 }

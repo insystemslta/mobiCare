@@ -3,6 +3,6 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="user_sync_in_progress">User sync in progress please wait...</string>
+    <string name="user_sync_in_progress">Syncronizacao do utilizador em progresso, aguarde por favor...</string>
     <string name="error_msg_sync_failed">Sync failed!</string>
 </resources>

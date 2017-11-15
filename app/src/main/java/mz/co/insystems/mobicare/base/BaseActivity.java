@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.model.entidade.user.User;
 
 
 /**
@@ -23,6 +24,7 @@ import mz.co.insystems.mobicare.R;
 public class BaseActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper = null;
     protected String TAG;
+    private User currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -42,8 +44,18 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+
+
     public BaseActivity(){
 
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -91,7 +103,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected DatabaseHelper getHelper() {
         if (dbHelper == null) {
-            dbHelper = OpenHelperManager.getHelper(this,DatabaseHelper.class);
+            dbHelper = OpenHelperManager.getHelper(BaseActivity.this,DatabaseHelper.class);
         }
         return dbHelper;
     }

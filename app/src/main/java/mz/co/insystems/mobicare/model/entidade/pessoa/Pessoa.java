@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.model.entidade;
+package mz.co.insystems.mobicare.model.entidade.pessoa;
 
 import android.databinding.Bindable;
 

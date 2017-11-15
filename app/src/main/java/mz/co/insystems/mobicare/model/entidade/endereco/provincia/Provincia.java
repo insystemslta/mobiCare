@@ -65,6 +65,14 @@ public class Provincia extends BaseVO {
         notifyPropertyChanged(BR.id);
     }
 
+    @Override
+    public String toString() {
+        return "Provincia{" +
+                "id=" + id +
+                ", designacao='" + designacao + '\'' +
+                ", descricao='" + descricao + '\'' +
+                '}';
+    }
 
     @Override
     public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {

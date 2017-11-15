@@ -1,7 +1,7 @@
 package mz.co.insystems.mobicare.model.entidade.farmaco.grupofarmaco;
 
-import android.databinding.Bindable;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import mz.co.insystems.mobicare.base.BaseVO;
 
@@ -38,5 +38,15 @@ public class GrupoFarmaco extends BaseVO {
 
     public void setDesignacao(String designacao) {
         this.designacao = designacao;
+    }
+
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        return null;
     }
 }

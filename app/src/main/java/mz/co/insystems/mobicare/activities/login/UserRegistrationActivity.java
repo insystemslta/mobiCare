@@ -9,10 +9,14 @@ import android.widget.Button;
 
 import com.android.volley.Request;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.base.BaseActivity;
+import mz.co.insystems.mobicare.model.entidade.Pessoa;
+import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
+import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
 import mz.co.insystems.mobicare.model.entidade.user.User;
 import mz.co.insystems.mobicare.model.entidade.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
@@ -42,10 +46,6 @@ public class UserRegistrationActivity extends BaseActivity {
         sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                setCurrentUser(new User());
-                getCurrentUser().setUserName("844441662");
-                getCurrentUser().setPassword("1000");
                 doUserSync();
 
             }
@@ -55,9 +55,6 @@ public class UserRegistrationActivity extends BaseActivity {
     public void onClickButton(View view) {
         if(view instanceof Button){
             if (((Button) view).getId() == R.id.btnSync) {
-                setCurrentUser(new User());
-                getCurrentUser().setUserName("844441662");
-                getCurrentUser().setPassword("1000");
                 this.doUserSync();
             }
         }
@@ -74,22 +71,38 @@ public class UserRegistrationActivity extends BaseActivity {
         final String url = uri.build().toString();
 
 
+        final User user = new User();
+        user.setUserName("844441662");
+        user.setPassword("1000");
+        user.setPessoa(new Pessoa());
+        user.getPessoa().setName("Jaime");
+        user.getPessoa().setSurname("Horrr");
+        user.getPessoa().setContacto(new Contacto(100, "voloidet@gmail.com", "637278292", "73872992"));
+        user.getPessoa().setEndereco(new Endereco(34.778893,78.9887));
+        user.setEstado(1);
+
+
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-               service.makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().genarateJsonObject(), getCurrentUser(), new VolleyResponseListener() {
-                   @Override
-                   public void onError(String message) {
-                       syncProgress.dismiss();
-                       Log.d("tag", message);
-                   }
+                try {
+                    service.makeJsonObjectRequest(Request.Method.PUT, url, user.genarateJsonObject(), user, new VolleyResponseListener() {
+                        @Override
+                        public void onError(String message) {
+                            syncProgress.dismiss();
+                            Log.d("tag", message);
+                        }
 
-                   @Override
-                   public void onResponse(JSONObject response, int myStatusCode) {
-                       syncProgress.dismiss();
-                       printUser(response);
-                   }
-               });
+                        @Override
+                        public void onResponse(JSONObject response, int myStatusCode) {
+                            syncProgress.dismiss();
+                            printUser(response);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

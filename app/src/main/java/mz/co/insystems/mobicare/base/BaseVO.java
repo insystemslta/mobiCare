@@ -2,6 +2,9 @@ package mz.co.insystems.mobicare.base;
 
 import android.databinding.BaseObservable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 
@@ -10,4 +13,6 @@ import java.io.Serializable;
  */
 public abstract class BaseVO extends BaseObservable implements Serializable {
 
+    public abstract BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException;
+    public abstract JSONObject genarateJsonObject() throws JSONException;
 }

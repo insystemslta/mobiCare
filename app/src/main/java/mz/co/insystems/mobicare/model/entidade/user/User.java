@@ -24,9 +24,8 @@ public class User extends BaseVO {
     public static final String COLUMN_USER_NAME		= "user_name";
     public static final String COLUMN_PASSWORD 		= "password";
     public static final String COLUMN_ESTADO 		= "estado";
-    public static final String COLUMN_TYPE 			= "user_type_id";
-    public static final String COLUMN_PESSOA_ID			= "pessoa_id";
-    public static final String COLUMN_FARMACIA_ID 			= "farmacia_id";
+    public static final String COLUMN_PESSOA_ID		= "pessoa_id";
+    public static final String COLUMN_FARMACIA_ID 	= "farmacia_id";
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +36,7 @@ public class User extends BaseVO {
     @DatabaseField
     private String password;
     @DatabaseField(columnName = COLUMN_ESTADO)
-    private boolean active;
+    private int estado;
 
     @DatabaseField(columnName = COLUMN_PESSOA_ID, foreign = true, foreignAutoRefresh = true)
     private Pessoa pessoa;
@@ -55,6 +54,10 @@ public class User extends BaseVO {
         this.password = Utilities.MD5Crypt(password);
     }
 
+    public boolean isActive(){
+        return this.estado == 1;
+    }
+
     public User() {}
 
     @Bindable
@@ -68,12 +71,12 @@ public class User extends BaseVO {
         notifyPropertyChanged(BR.id);
     }
 
-    public boolean isActive() {
-        return active;
+    public int getEstado() {
+        return estado;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     public void setPassword(String password) {
@@ -130,28 +133,30 @@ public class User extends BaseVO {
         notifyPropertyChanged(BR.farmacia);
     }
 
-    public JSONObject genarateJsonObject() {
-        JSONObject userJsonObject = new JSONObject();
-        try {
-            userJsonObject.put(User.COLUMN_USER_NAME, this.getUserName());
-            userJsonObject.put(User.COLUMN_PASSWORD, this.getPassword());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return userJsonObject;
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        User user = new User();
+
+        user.setId(jsonObject.getInt(COLUMN_ID));
+        user.setUserName(jsonObject.getString(User.COLUMN_USER_NAME));
+        user.setNotCryptedPassword(jsonObject.getString(User.COLUMN_PASSWORD));
+        if (jsonObject.has(Pessoa.TABLE_NAME)) user.setPessoa((Pessoa) new Pessoa().convertVoFromJSON(jsonObject.getJSONObject(Pessoa.TABLE_NAME)));
+        if (jsonObject.has(Farmacia.TABLE_NAME_FARMACIA)) user.setFarmacia((Farmacia) new Farmacia().convertVoFromJSON(jsonObject.getJSONObject(Farmacia.TABLE_NAME_FARMACIA)));
+        return user;
     }
 
-    public static User convertFromJSON(JSONObject userJson, boolean isFarmacia) throws JSONException {
-        User user = new User();
-        user.setId(userJson.getInt(COLUMN_ID));
-        user.setUserName(userJson.getString(User.COLUMN_USER_NAME));
-        user.setNotCryptedPassword(userJson.getString(User.COLUMN_PASSWORD));
-        if (!isFarmacia) {
-            user.setPessoa(Pessoa.convertFromJSON(userJson.getJSONObject(Pessoa.TABLE_NAME)));
-        }else {
-            user.setFarmacia(Farmacia.convertFromJSON(userJson.getJSONObject(Farmacia.TABLE_NAME_FARMACIA)));
-        }
-        return user;
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        JSONObject userJsonObject = new JSONObject();
+
+        userJsonObject.put(COLUMN_ID,           this.getId());
+        userJsonObject.put(COLUMN_USER_NAME,    this.getUserName());
+        userJsonObject.put(COLUMN_PASSWORD,     this.getPassword());
+        userJsonObject.put(COLUMN_ESTADO,       this.getEstado());
+
+        if (this.getPessoa() != null)   userJsonObject.put(Pessoa.TABLE_NAME,               this.getPessoa().genarateJsonObject());
+        if (this.getFarmacia() != null) userJsonObject.put(Farmacia.TABLE_NAME_FARMACIA,    this.getFarmacia().genarateJsonObject());
+        return userJsonObject;
     }
 }
 

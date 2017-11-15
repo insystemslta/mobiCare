@@ -2,6 +2,9 @@ package mz.co.insystems.mobicare.model.entidade.farmacia.servicos;
 
 import android.databinding.Bindable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import mz.co.insystems.mobicare.base.BaseVO;
 
 /**
@@ -54,5 +57,15 @@ public class Servico extends BaseVO {
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        return null;
     }
 }

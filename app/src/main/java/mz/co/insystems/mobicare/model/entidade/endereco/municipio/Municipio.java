@@ -1,11 +1,14 @@
 package mz.co.insystems.mobicare.model.entidade.endereco.municipio;
 
 import android.databinding.Bindable;
-import mz.co.insystems.mobicare.BR;
+
 import com.j256.ormlite.field.DatabaseField;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
-import mz.co.insystems.mobicare.model.entidade.endereco.bairro.Bairro;
 import mz.co.insystems.mobicare.model.entidade.endereco.provincia.Provincia;
 
 /**
@@ -73,4 +76,13 @@ public class Municipio extends BaseVO {
         this.provincia = provincia;
     }
 
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        return null;
+    }
 }

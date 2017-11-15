@@ -5,6 +5,7 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -107,7 +108,23 @@ public class Farmacia extends BaseVO {
         this.servicos = servicos;
     }
 
-    public static Farmacia convertFromJSON(JSONObject jsonObject) {
+
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
         return null;
     }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        JSONObject userJsonObject = new JSONObject();
+
+        userJsonObject.put(COLUMN_FARMACIA_ID,      this.getId());
+        userJsonObject.put(COLUMN_FARMACIA_NOME,    this.getNome());
+        userJsonObject.put(COLUMN_FARMACIA_ESTADO,  this.getEstado());
+        userJsonObject.put(Contacto.TABLE_NAME_CONTACT,     this.getContacto().genarateJsonObject());
+        userJsonObject.put(Endereco.TABLE_NAME_ENDERECO,    this.getEndereco().genarateJsonObject());
+
+        return userJsonObject;
+    }
+
 }

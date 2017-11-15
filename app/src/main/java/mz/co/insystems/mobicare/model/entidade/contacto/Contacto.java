@@ -80,12 +80,23 @@ public class Contacto extends BaseVO {
         notifyPropertyChanged(BR.auxMobileNumber);
     }
 
-    private static Contacto convertFromJSON(JSONObject contactJsOb) throws JSONException {
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
         Contacto contacto = new Contacto();
-        contacto.setId(contactJsOb.getInt(Contacto.COLUMN_CONTACT_ID));
-        contacto.setEmail(contactJsOb.getString(Contacto.COLUMN_CONTACT_EMAIL));
-        contacto.setMainMobileNumber(contactJsOb.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_MAIN));
-        contacto.setAuxMobileNumber(contactJsOb.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_AUX));
+        contacto.setId(jsonObject.getInt(Contacto.COLUMN_CONTACT_ID));
+        contacto.setEmail(jsonObject.getString(Contacto.COLUMN_CONTACT_EMAIL));
+        contacto.setMainMobileNumber(jsonObject.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_MAIN));
+        contacto.setAuxMobileNumber(jsonObject.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_AUX));
         return contacto;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put(COLUMN_CONTACT_ID, this.getId());
+        object.put(COLUMN_CONTACT_EMAIL, this.getEmail());
+        object.put(COLUMN_CONTACT_PHONE_NUMBER_MAIN, this.getMainMobileNumber());
+        object.put(COLUMN_CONTACT_PHONE_NUMBER_AUX, this.getAuxMobileNumber());
+        return object;
     }
 }

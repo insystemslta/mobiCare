@@ -2,11 +2,11 @@ package mz.co.insystems.mobicare.model.entidade.endereco.provincia;
 
 import android.databinding.Bindable;
 
-import com.j256.ormlite.field.DatabaseField;
-
-import mz.co.insystems.mobicare.base.BaseVO;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import mz.co.insystems.mobicare.BR;
+import mz.co.insystems.mobicare.base.BaseVO;
 
 /**
  * Created by voloide on 9/15/16.
@@ -59,6 +59,14 @@ public class Provincia extends BaseVO {
         notifyPropertyChanged(BR.id);
     }
 
-    
 
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        return null;
+    }
 }

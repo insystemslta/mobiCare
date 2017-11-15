@@ -4,6 +4,9 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.entidade.endereco.bairro.Bairro;
@@ -17,7 +20,7 @@ public class Endereco extends BaseVO {
     public static final String TABLE_NAME_ENDERECO			        = "endereco";
     public static final String COLUMN_ENDERECO_ID 			        = "id";
     public static final String COLUMN_ENDERECO_LATITUDE 			= "latitude";
-    public static final String COLUMN_ENDERECO_LONGITUDE            = "langitude";
+    public static final String COLUMN_ENDERECO_LONGITUDE            = "longitude";
     public static final String COLUMN_ENDERECO_BAIRRO_ID 	        = "bairro_id";
     public static final String COLUMN_ENDERECO_POSTO_ID 	        = "posto_id";
     public static final String COLUMN_ENDERECO_RUA_AV 	            = "ruaAvenida";
@@ -42,6 +45,11 @@ public class Endereco extends BaseVO {
 
     private String ncasa;
 
+
+    public Endereco(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public Endereco(){}
 
@@ -115,5 +123,22 @@ public class Endereco extends BaseVO {
         this.ncasa = ncasa;
     }
 
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
 
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put(COLUMN_ENDERECO_ID, this.getId());
+        object.put(COLUMN_ENDERECO_LATITUDE, this.getLatitude());
+        object.put(COLUMN_ENDERECO_LONGITUDE, this.getLongitude());
+        object.put(COLUMN_ENDERECO_BAIRRO_ID, this.getBairro());
+        object.put(COLUMN_ENDERECO_POSTO_ID, this.getPostoAdministrativo());
+        object.put(COLUMN_ENDERECO_RUA_AV, this.getRuaAvenida());
+        object.put(COLUMN_ENDERECO_ZONA, this.getZona());
+        object.put(COLUMN_ENDERECO_NCASA, this.getZona());
+        return object;
+    }
 }

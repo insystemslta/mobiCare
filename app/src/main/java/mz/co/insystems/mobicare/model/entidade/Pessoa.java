@@ -4,6 +4,7 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import mz.co.insystems.mobicare.BR;
@@ -33,6 +34,14 @@ public class Pessoa extends BaseVO {
     private Contacto contacto;
     @DatabaseField(columnName = COLUMN_ENDERECO_ID, foreign = true, foreignAutoRefresh = true)
     private Endereco endereco;
+
+    public Pessoa(long id, String name, String surname, Contacto contacto, Endereco endereco) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.contacto = contacto;
+        this.endereco = endereco;
+    }
 
     @Bindable
     public Endereco getEndereco() {
@@ -85,7 +94,22 @@ public class Pessoa extends BaseVO {
         notifyPropertyChanged(BR.contacto);
     }
 
-    public static Pessoa convertFromJSON(JSONObject jsonObject) {
+
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
         return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put(COLUMN_ID,       this.getId());
+            jsonObject.put(COLUMN_NAME,     this.getName());
+            jsonObject.put(COLUMN_SURNAME,  this.getSurname());
+            jsonObject.put(Contacto.TABLE_NAME_CONTACT, this.getContacto().genarateJsonObject());
+            jsonObject.put(Endereco.TABLE_NAME_ENDERECO, this.getEndereco().genarateJsonObject());
+
+        return jsonObject;
     }
 }

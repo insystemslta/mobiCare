@@ -4,6 +4,9 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.entidade.endereco.distrito.Distrito;
@@ -80,5 +83,15 @@ public class PostoAdministrativo extends BaseVO {
 
     public void setDistrito(Distrito distrito) {
         this.distrito = distrito;
+    }
+
+    @Override
+    public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
+        return null;
+    }
+
+    @Override
+    public JSONObject genarateJsonObject() throws JSONException {
+        return null;
     }
 }

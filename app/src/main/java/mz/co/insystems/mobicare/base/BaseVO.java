@@ -14,5 +14,5 @@ import java.io.Serializable;
 public abstract class BaseVO extends BaseObservable implements Serializable {
 
     public abstract BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException;
-    public abstract JSONObject genarateJsonObject() throws JSONException;
+    public abstract JSONObject generateJsonObject() throws JSONException;
 }

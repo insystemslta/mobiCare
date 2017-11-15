@@ -2,6 +2,9 @@ package mz.co.insystems.mobicare.model.entidade.contacto;
 
 import android.databinding.Bindable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +14,7 @@ import mz.co.insystems.mobicare.base.BaseVO;
 /**
  * Created by voloide on 9/15/16.
  */
+@DatabaseTable(tableName = Contacto.TABLE_NAME_CONTACT, daoClass = ContactDao.class)
 public class Contacto extends BaseVO {
 
     public static final String TABLE_NAME_CONTACT			    = "contacto";
@@ -21,9 +25,13 @@ public class Contacto extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_CONTACT_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField
     private String email;
+    @DatabaseField
     private String mainMobileNumber;
+    @DatabaseField
     private String auxMobileNumber;
 
 
@@ -91,7 +99,7 @@ public class Contacto extends BaseVO {
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
+    public JSONObject generateJsonObject() throws JSONException {
         JSONObject object = new JSONObject();
         object.put(COLUMN_CONTACT_ID, this.getId());
         object.put(COLUMN_CONTACT_EMAIL, this.getEmail());

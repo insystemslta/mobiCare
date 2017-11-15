@@ -3,6 +3,7 @@ package mz.co.insystems.mobicare.model.entidade.endereco.municipio;
 import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import mz.co.insystems.mobicare.model.entidade.endereco.provincia.Provincia;
 /**
  * Created by voloide on 9/15/16.
  */
+@DatabaseTable(tableName = Municipio.TABLE_NAME_MUNICIPIO, daoClass = MunicipioDao.class)
 public class Municipio extends BaseVO {
 
     public static final String TABLE_NAME_MUNICIPIO                    = "municipio";
@@ -25,8 +27,11 @@ public class Municipio extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_MUNICIPIO_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField(columnName = COLUMN_MUNICIPIO_DESIGNACAO)
     private String designacao;
+    @DatabaseField(columnName = COLUMN_MUNICIPIO_DESCRICAO)
     private String descricao;
 
     @DatabaseField(columnName = COLUMN_MUNICIPIO_PROVINCIA_ID, foreign = true, foreignAutoRefresh = true)
@@ -78,11 +83,21 @@ public class Municipio extends BaseVO {
 
     @Override
     public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-        return null;
+        Municipio municipio = new Municipio();
+        municipio.setId(jsonObject.getInt(COLUMN_MUNICIPIO_ID));
+        municipio.setDescricao(jsonObject.getString(COLUMN_MUNICIPIO_DESCRICAO));
+        municipio.setDesignacao(jsonObject.getString(COLUMN_MUNICIPIO_DESIGNACAO));
+        municipio.setProvincia((Provincia) new Provincia().convertVoFromJSON(jsonObject.getJSONObject(Provincia.TABLE_NAME_PROVINCIA)));
+        return municipio;
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
-        return null;
+    public JSONObject generateJsonObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(COLUMN_MUNICIPIO_ID,           this.getId());
+        jsonObject.put(COLUMN_MUNICIPIO_DESIGNACAO,   this.getDesignacao());
+        jsonObject.put(COLUMN_MUNICIPIO_DESCRICAO,    this.getDescricao());
+        jsonObject.put(Provincia.TABLE_NAME_PROVINCIA,    this.getProvincia().generateJsonObject());
+        return jsonObject;
     }
 }

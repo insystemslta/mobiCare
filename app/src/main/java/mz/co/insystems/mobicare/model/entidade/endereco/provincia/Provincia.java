@@ -2,6 +2,9 @@ package mz.co.insystems.mobicare.model.entidade.endereco.provincia;
 
 import android.databinding.Bindable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +14,7 @@ import mz.co.insystems.mobicare.base.BaseVO;
 /**
  * Created by voloide on 9/15/16.
  */
+@DatabaseTable(tableName = Provincia.TABLE_NAME_PROVINCIA, daoClass = ProvinciaDao.class)
 public class Provincia extends BaseVO {
 
     public static final String TABLE_NAME_PROVINCIA                 = "provincia";
@@ -21,9 +25,11 @@ public class Provincia extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_PROVINCIA_ID, id = true, generatedId = false)
     private long id;
-
+    @DatabaseField(columnName = COLUMN_PROVINCIA_DESIGNACAO)
     private String designacao;
+    @DatabaseField(columnName = COLUMN_PROVINCIA_DESCRICAO)
     private String descricao;
 
 
@@ -62,11 +68,19 @@ public class Provincia extends BaseVO {
 
     @Override
     public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-        return null;
+        Provincia provincia = new Provincia();
+        provincia.setId(jsonObject.getInt(COLUMN_PROVINCIA_ID));
+        provincia.setDescricao(jsonObject.getString(COLUMN_PROVINCIA_DESCRICAO));
+        provincia.setDesignacao(jsonObject.getString(COLUMN_PROVINCIA_DESIGNACAO));
+        return provincia;
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
-        return null;
+    public JSONObject generateJsonObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(COLUMN_PROVINCIA_ID,           this.getId());
+        jsonObject.put(COLUMN_PROVINCIA_DESIGNACAO,   this.getDesignacao());
+        jsonObject.put(COLUMN_PROVINCIA_DESCRICAO,    this.getDescricao());
+        return jsonObject;
     }
 }

@@ -3,6 +3,7 @@ package mz.co.insystems.mobicare.model.entidade.endereco.distrito;
 import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import mz.co.insystems.mobicare.model.entidade.endereco.provincia.Provincia;
 /**
  * Created by voloide on 9/15/16.
  */
+@DatabaseTable(tableName = Distrito.TABLE_NAME_DISTRITO, daoClass = DistritoDao.class)
 public class Distrito extends BaseVO {
 
     public static final String TABLE_NAME_DISTRITO                       = "distrito";
@@ -25,8 +27,11 @@ public class Distrito extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_DISTRITO_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField(columnName = COLUMN_DISTRITO_DESIGNACAO)
     private String designacao;
+    @DatabaseField(columnName = COLUMN_DISTRITO_DESCRICAO)
     private String descricao;
 
     @DatabaseField(columnName = COLUMN_DISTRITO_PROVINCIA_ID, foreign = true, foreignAutoRefresh = true)
@@ -78,11 +83,21 @@ public class Distrito extends BaseVO {
 
     @Override
     public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-        return null;
+        Distrito distrito = new Distrito();
+        distrito.setId(jsonObject.getInt(COLUMN_DISTRITO_ID));
+        distrito.setDescricao(jsonObject.getString(COLUMN_DISTRITO_DESCRICAO));
+        distrito.setDesignacao(jsonObject.getString(COLUMN_DISTRITO_DESIGNACAO));
+        distrito.setProvincia((Provincia) new Provincia().convertVoFromJSON(jsonObject.getJSONObject(Provincia.TABLE_NAME_PROVINCIA)));
+        return distrito;
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
-        return null;
+    public JSONObject generateJsonObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(COLUMN_DISTRITO_ID,           this.getId());
+        jsonObject.put(COLUMN_DISTRITO_DESIGNACAO,   this.getDesignacao());
+        jsonObject.put(COLUMN_DISTRITO_DESCRICAO,    this.getDescricao());
+        jsonObject.put(Provincia.TABLE_NAME_PROVINCIA,    this.getProvincia().generateJsonObject());
+        return jsonObject;
     }
 }

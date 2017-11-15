@@ -4,6 +4,7 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import mz.co.insystems.mobicare.model.entidade.farmacia.servicos.Servico;
 /**
  * Created by Voloide Tamele on 10/23/2017.
  */
+@DatabaseTable(tableName = Farmacia.TABLE_NAME_FARMACIA, daoClass = FarmaciaDao.class)
 public class Farmacia extends BaseVO {
     public static final String TABLE_NAME_FARMACIA			                = "farmacia";
     public static final String COLUMN_FARMACIA_ID 			                = "id";
@@ -29,8 +31,11 @@ public class Farmacia extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_FARMACIA_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField
     private String nome;
+    @DatabaseField
     private int estado;
     @DatabaseField(columnName = COLUMN_FARMACIA_ENDERECO, foreign = true, foreignAutoRefresh = true)
     private Endereco endereco;
@@ -115,14 +120,14 @@ public class Farmacia extends BaseVO {
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
+    public JSONObject generateJsonObject() throws JSONException {
         JSONObject userJsonObject = new JSONObject();
 
         userJsonObject.put(COLUMN_FARMACIA_ID,      this.getId());
         userJsonObject.put(COLUMN_FARMACIA_NOME,    this.getNome());
         userJsonObject.put(COLUMN_FARMACIA_ESTADO,  this.getEstado());
-        userJsonObject.put(Contacto.TABLE_NAME_CONTACT,     this.getContacto().genarateJsonObject());
-        userJsonObject.put(Endereco.TABLE_NAME_ENDERECO,    this.getEndereco().genarateJsonObject());
+        userJsonObject.put(Contacto.TABLE_NAME_CONTACT,     this.getContacto().generateJsonObject());
+        userJsonObject.put(Endereco.TABLE_NAME_ENDERECO,    this.getEndereco().generateJsonObject());
 
         return userJsonObject;
     }

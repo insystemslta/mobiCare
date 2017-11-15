@@ -3,6 +3,7 @@ package mz.co.insystems.mobicare.model.entidade.endereco;
 import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ import mz.co.insystems.mobicare.model.entidade.endereco.postoadministrativo.Post
 /**
  * Created by voloide on 9/15/16.
  */
+@DatabaseTable(tableName = Endereco.TABLE_NAME_ENDERECO, daoClass = EnderecoDao.class)
 public class Endereco extends BaseVO {
 
     public static final String TABLE_NAME_ENDERECO			        = "endereco";
@@ -29,9 +31,13 @@ public class Endereco extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField(columnName = COLUMN_ENDERECO_ID, id = true, generatedId = false)
     private long id;
+    @DatabaseField
     private double latitude;
+    @DatabaseField
     private double longitude;
+    @DatabaseField
     private String zona;
 
     @DatabaseField(columnName = COLUMN_ENDERECO_BAIRRO_ID, foreign = true, foreignAutoRefresh = true)
@@ -40,9 +46,11 @@ public class Endereco extends BaseVO {
     @DatabaseField(columnName = COLUMN_ENDERECO_POSTO_ID, foreign = true, foreignAutoRefresh = true)
     private PostoAdministrativo postoAdministrativo;
 
+    @DatabaseField
     private String ruaAvenida;
 
 
+    @DatabaseField
     private String ncasa;
 
 
@@ -125,11 +133,28 @@ public class Endereco extends BaseVO {
 
     @Override
     public BaseVO convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-        return null;
+        Endereco endereco = new Endereco();
+
+        endereco.setId(jsonObject.getInt(COLUMN_ENDERECO_ID));
+        endereco.setLatitude(jsonObject.getDouble(COLUMN_ENDERECO_LATITUDE));
+        endereco.setLongitude(jsonObject.getDouble(COLUMN_ENDERECO_LONGITUDE));
+        endereco.setNcasa(jsonObject.getString(COLUMN_ENDERECO_NCASA));
+        endereco.setRuaAvenida(jsonObject.getString(COLUMN_ENDERECO_RUA_AV));
+        if (jsonObject.has(Bairro.TABLE_NAME_BAIRRO)){
+            Bairro bairro = new Bairro();
+            endereco.setBairro((Bairro) bairro.convertVoFromJSON(jsonObject.getJSONObject(Bairro.TABLE_NAME_BAIRRO)));
+        }else
+            if (jsonObject.has(PostoAdministrativo.TABLE_NAME_POSTO)){
+                PostoAdministrativo posto = new PostoAdministrativo();
+                endereco.setPostoAdministrativo((PostoAdministrativo) posto.convertVoFromJSON(jsonObject.getJSONObject(PostoAdministrativo.TABLE_NAME_POSTO)));
+        }
+        endereco.setZona(jsonObject.getString(COLUMN_ENDERECO_ZONA));
+
+        return endereco;
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
+    public JSONObject generateJsonObject() throws JSONException {
         JSONObject object = new JSONObject();
         object.put(COLUMN_ENDERECO_ID, this.getId());
         object.put(COLUMN_ENDERECO_LATITUDE, this.getLatitude());

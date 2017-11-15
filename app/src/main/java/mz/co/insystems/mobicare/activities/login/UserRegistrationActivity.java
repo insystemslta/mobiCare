@@ -12,11 +12,13 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
+
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.base.BaseActivity;
-import mz.co.insystems.mobicare.model.entidade.Pessoa;
 import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
+import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.entidade.user.User;
 import mz.co.insystems.mobicare.model.entidade.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
@@ -28,12 +30,7 @@ public class UserRegistrationActivity extends BaseActivity {
 
 
     public UserRegistrationActivity() {
-        super();
-        /*try {
-            mUserDao = getHelper().getUserDao();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
+
     }
 
     @Override
@@ -41,7 +38,7 @@ public class UserRegistrationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
 
-        final Button sync 			= (Button) 	 findViewById(R.id.btnSync);
+        final Button sync 			= findViewById(R.id.btnSync);
 
         sync.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +51,7 @@ public class UserRegistrationActivity extends BaseActivity {
 
     public void onClickButton(View view) {
         if(view instanceof Button){
-            if (((Button) view).getId() == R.id.btnSync) {
+            if (view.getId() == R.id.btnSync) {
                 this.doUserSync();
             }
         }
@@ -64,11 +61,18 @@ public class UserRegistrationActivity extends BaseActivity {
         syncProgress = ProgressDialog.show(UserRegistrationActivity.this, ""
                 , getString(R.string.user_sync_in_progress));
         syncProgress.setCancelable(true);
+
         final MobicareSyncService service = new MobicareSyncService();
         Uri.Builder uri =  service.initServiceUri();
         uri.appendPath(MobicareSyncService.SERVICE_ENTITY_USER);
         uri.appendPath(MobicareSyncService.SERVICE_CREATE);
         final String url = uri.build().toString();
+
+        try {
+            mUserDao = getHelper(UserRegistrationActivity.this).getUserDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
         final User user = new User();
@@ -87,7 +91,7 @@ public class UserRegistrationActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    service.makeJsonObjectRequest(Request.Method.PUT, url, user.genarateJsonObject(), user, new VolleyResponseListener() {
+                    service.makeJsonObjectRequest(Request.Method.PUT, url, user.generateJsonObject(), user, new VolleyResponseListener() {
                         @Override
                         public void onError(String message) {
                             syncProgress.dismiss();

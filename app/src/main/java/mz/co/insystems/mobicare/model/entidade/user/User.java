@@ -10,8 +10,8 @@ import org.json.JSONObject;
 
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
-import mz.co.insystems.mobicare.model.entidade.Pessoa;
 import mz.co.insystems.mobicare.model.entidade.farmacia.Farmacia;
+import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
 import mz.co.insystems.mobicare.util.Utilities;
 
 /**
@@ -146,7 +146,7 @@ public class User extends BaseVO {
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
+    public JSONObject generateJsonObject() throws JSONException {
         JSONObject userJsonObject = new JSONObject();
 
         userJsonObject.put(COLUMN_ID,           this.getId());
@@ -154,8 +154,8 @@ public class User extends BaseVO {
         userJsonObject.put(COLUMN_PASSWORD,     this.getPassword());
         userJsonObject.put(COLUMN_ESTADO,       this.getEstado());
 
-        if (this.getPessoa() != null)   userJsonObject.put(Pessoa.TABLE_NAME,               this.getPessoa().genarateJsonObject());
-        if (this.getFarmacia() != null) userJsonObject.put(Farmacia.TABLE_NAME_FARMACIA,    this.getFarmacia().genarateJsonObject());
+        if (this.getPessoa() != null)   userJsonObject.put(Pessoa.TABLE_NAME,               this.getPessoa().generateJsonObject());
+        if (this.getFarmacia() != null) userJsonObject.put(Farmacia.TABLE_NAME_FARMACIA,    this.getFarmacia().generateJsonObject());
         return userJsonObject;
     }
 }

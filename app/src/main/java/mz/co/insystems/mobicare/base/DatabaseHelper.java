@@ -10,12 +10,22 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 
 import mz.co.insystems.mobicare.model.entidade.contacto.ContactDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.EnderecoDao;
-import mz.co.insystems.mobicare.model.entidade.farmacia.FarmaciaDao;
-import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
+import mz.co.insystems.mobicare.model.entidade.endereco.EnderecoDao;
+import mz.co.insystems.mobicare.model.entidade.endereco.bairro.Bairro;
+import mz.co.insystems.mobicare.model.entidade.endereco.bairro.BairroDao;
+import mz.co.insystems.mobicare.model.entidade.endereco.distrito.Distrito;
+import mz.co.insystems.mobicare.model.entidade.endereco.distrito.DistritoDao;
+import mz.co.insystems.mobicare.model.entidade.endereco.municipio.Municipio;
+import mz.co.insystems.mobicare.model.entidade.endereco.municipio.MunicipioDao;
+import mz.co.insystems.mobicare.model.entidade.endereco.postoadministrativo.PostoAdministrativo;
+import mz.co.insystems.mobicare.model.entidade.endereco.postoadministrativo.PostoAdministrativoDao;
+import mz.co.insystems.mobicare.model.entidade.endereco.provincia.Provincia;
+import mz.co.insystems.mobicare.model.entidade.endereco.provincia.ProvinciaDao;
 import mz.co.insystems.mobicare.model.entidade.farmacia.Farmacia;
+import mz.co.insystems.mobicare.model.entidade.farmacia.FarmaciaDao;
+import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.entidade.pessoa.PessoaDao;
 import mz.co.insystems.mobicare.model.entidade.user.User;
 import mz.co.insystems.mobicare.model.entidade.user.UserDao;
@@ -36,6 +46,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private EnderecoDao enderecoDao;
     private ContactDao contactDao;
 
+    private ProvinciaDao provinciaDao;
+    private DistritoDao distritoDao;
+    private MunicipioDao municipioDao;
+    private BairroDao bairroDao;
+    private PostoAdministrativoDao postoAdministrativoDao;
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -53,6 +69,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Endereco.class);
             TableUtils.createTable(connectionSource, Contacto.class);
 
+            TableUtils.createTable(connectionSource, Provincia.class);
+            TableUtils.createTable(connectionSource, Distrito.class);
+            TableUtils.createTable(connectionSource, Municipio.class);
+            TableUtils.createTable(connectionSource, PostoAdministrativo.class);
+            TableUtils.createTable(connectionSource, Bairro.class);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,7 +85,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         //TableUtils.dropTable(connectionSource, Vehicle.class, true);
 
-        onCreate(database, connectionSource);
+        //onCreate(database, connectionSource);
     }
 
 
@@ -99,5 +121,40 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         if (contactDao == null){
             contactDao = getDao(Contacto.class);
         }  return contactDao;
+    }
+
+    public ProvinciaDao getProvinciaDao() throws SQLException {
+        if (provinciaDao == null){
+            provinciaDao = getDao(Provincia.class);
+        }
+        return provinciaDao;
+    }
+
+    public DistritoDao getDistritoDao() throws SQLException {
+        if (distritoDao == null){
+            distritoDao = getDao(Distrito.class);
+        }
+        return distritoDao;
+    }
+
+    public MunicipioDao getMunicipioDao() throws SQLException {
+        if (municipioDao == null){
+            municipioDao = getDao(Municipio.class);
+        }
+        return municipioDao;
+    }
+
+    public BairroDao getBairroDao() throws SQLException {
+        if (bairroDao == null){
+            bairroDao = getDao(Bairro.class);
+        }
+        return bairroDao;
+    }
+
+    public PostoAdministrativoDao getPostoAdministrativoDao() throws SQLException {
+        if (postoAdministrativoDao == null){
+            postoAdministrativoDao = getDao(PostoAdministrativo.class);
+        }
+        return postoAdministrativoDao;
     }
 }

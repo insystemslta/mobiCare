@@ -44,8 +44,6 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-
-
     public BaseActivity(){
 
     }
@@ -72,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private Toolbar initToolbar(boolean addHomeButton, ColorDrawable icon) {
-        Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
+        Toolbar toolbar = this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
         toolbar.bringToFront();
 
@@ -101,9 +99,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected DatabaseHelper getHelper() {
+    protected DatabaseHelper getHelper(Context context) {
         if (dbHelper == null) {
-            dbHelper = OpenHelperManager.getHelper(BaseActivity.this,DatabaseHelper.class);
+            dbHelper = OpenHelperManager.getHelper(context,DatabaseHelper.class);
         }
         return dbHelper;
     }

@@ -46,7 +46,7 @@ public class GrupoFarmaco extends BaseVO {
     }
 
     @Override
-    public JSONObject genarateJsonObject() throws JSONException {
+    public JSONObject generateJsonObject() throws JSONException {
         return null;
     }
 }

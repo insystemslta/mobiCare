@@ -13,7 +13,7 @@ import mz.co.insystems.mobicare.model.entidade.contacto.ContactDao;
 import mz.co.insystems.mobicare.model.entidade.endereco.EnderecoDao;
 import mz.co.insystems.mobicare.model.entidade.farmacia.FarmaciaDao;
 import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
-import mz.co.insystems.mobicare.model.entidade.contacto.Contact;
+import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
 import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
 import mz.co.insystems.mobicare.model.entidade.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.entidade.pessoa.PessoaDao;
@@ -51,7 +51,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Pessoa.class);
             TableUtils.createTable(connectionSource, Farmacia.class);
             TableUtils.createTable(connectionSource, Endereco.class);
-            TableUtils.createTable(connectionSource, Contact.class);
+            TableUtils.createTable(connectionSource, Contacto.class);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,7 +97,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     public ContactDao getContactDao()throws java.sql.SQLException{
         if (contactDao == null){
-            contactDao = getDao(Contact.class);
+            contactDao = getDao(Contacto.class);
         }  return contactDao;
     }
 }

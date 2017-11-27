@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#f1833c</color>
+    <color name="colorPrimaryDark">#ec6d1d</color>
+    <color name="colorAccent">#f8937f</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="color_line">#c0c0c0</color>
+    <color name="button_light_back">#f9dcca</color>
+    <color name="button_dark_back">#f18e4f</color>
+    <color name="hint_text_appearence">#a79991</color>
 </resources>

@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mz.co.insystems.mobicare.model.entidade.user.User;
+import mz.co.insystems.mobicare.model.user.User;
 
 /**
  * Created by Voloide Tamele on 11/7/2017.
@@ -35,7 +35,7 @@ public class MobicareSyncService {
     public static final String API_VERSION = "v1.0";
     public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION+"/index.php/";
 
-    public static final String URI_AUTHORITY_TEST = "192.168.0.51";
+    public static final String URI_AUTHORITY_TEST = "192.168.0.50";
 
     public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getFullCredentials";
     public static final String SERVICE_ENTITY_USER = "user";

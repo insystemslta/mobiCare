@@ -14,8 +14,16 @@ import android.support.v7.widget.Toolbar;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
+import java.sql.SQLException;
+
 import mz.co.insystems.mobicare.R;
-import mz.co.insystems.mobicare.model.entidade.user.User;
+import mz.co.insystems.mobicare.model.endereco.bairro.BairroDao;
+import mz.co.insystems.mobicare.model.endereco.distrito.DistritoDao;
+import mz.co.insystems.mobicare.model.endereco.municipio.MunicipioDao;
+import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativoDao;
+import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
+import mz.co.insystems.mobicare.model.user.User;
+import mz.co.insystems.mobicare.model.user.UserDao;
 
 
 /**
@@ -25,6 +33,13 @@ public class BaseActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper = null;
     protected String TAG;
     private User currentUser;
+
+    private UserDao mUserDao;
+    private ProvinciaDao provinciaDao;
+    private DistritoDao distritoDao;
+    private MunicipioDao municipioDao;
+    private PostoAdministrativoDao postoDao;
+    private BairroDao bairroDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -111,5 +126,59 @@ public class BaseActivity extends AppCompatActivity {
         alertDialogBuilder.setMessage(message);
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    public UserDao getmUserDao() {
+        try {
+            mUserDao = getHelper(getApplicationContext()).getUserDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return mUserDao;
+    }
+
+    public ProvinciaDao getProvinciaDao() {
+        try {
+            provinciaDao = getHelper(getApplicationContext()).getProvinciaDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return provinciaDao;
+    }
+
+    public DistritoDao getDistritoDao() {
+        try {
+            distritoDao = getHelper(getApplicationContext()).getDistritoDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return distritoDao;
+    }
+
+    public MunicipioDao getMunicipioDao() {
+        try {
+            municipioDao = getHelper(getApplicationContext()).getMunicipioDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return municipioDao;
+    }
+
+    public PostoAdministrativoDao getPostoDao() {
+        try {
+            postoDao = getHelper(getApplicationContext()).getPostoAdministrativoDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return postoDao;
+    }
+
+    public BairroDao getBairroDao() {
+        try {
+            bairroDao = getHelper(getApplicationContext()).getBairroDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bairroDao;
     }
 }

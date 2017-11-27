@@ -1,28 +1,7 @@
 package mz.co.insystems.mobicare.util;
 
-import android.util.Base64;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-
-import mz.co.insystems.mobicare.model.entidade.user.User;
-import mz.co.insystems.mobicare.sync.NetworkController;
-import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 
 /**
  * Created by Voloide Tamele on 10/20/2017.

@@ -9,27 +9,27 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-import mz.co.insystems.mobicare.R;
-import mz.co.insystems.mobicare.model.entidade.contacto.ContactDao;
-import mz.co.insystems.mobicare.model.entidade.contacto.Contacto;
-import mz.co.insystems.mobicare.model.entidade.endereco.Endereco;
-import mz.co.insystems.mobicare.model.entidade.endereco.EnderecoDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.bairro.Bairro;
-import mz.co.insystems.mobicare.model.entidade.endereco.bairro.BairroDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.distrito.Distrito;
-import mz.co.insystems.mobicare.model.entidade.endereco.distrito.DistritoDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.municipio.Municipio;
-import mz.co.insystems.mobicare.model.entidade.endereco.municipio.MunicipioDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.postoadministrativo.PostoAdministrativo;
-import mz.co.insystems.mobicare.model.entidade.endereco.postoadministrativo.PostoAdministrativoDao;
-import mz.co.insystems.mobicare.model.entidade.endereco.provincia.Provincia;
-import mz.co.insystems.mobicare.model.entidade.endereco.provincia.ProvinciaDao;
-import mz.co.insystems.mobicare.model.entidade.farmacia.Farmacia;
-import mz.co.insystems.mobicare.model.entidade.farmacia.FarmaciaDao;
-import mz.co.insystems.mobicare.model.entidade.pessoa.Pessoa;
-import mz.co.insystems.mobicare.model.entidade.pessoa.PessoaDao;
-import mz.co.insystems.mobicare.model.entidade.user.User;
-import mz.co.insystems.mobicare.model.entidade.user.UserDao;
+import mz.co.insystems.mobicare.model.contacto.ContactDao;
+import mz.co.insystems.mobicare.model.contacto.Contacto;
+import mz.co.insystems.mobicare.model.endereco.Endereco;
+import mz.co.insystems.mobicare.model.endereco.EnderecoDao;
+import mz.co.insystems.mobicare.model.endereco.bairro.Bairro;
+import mz.co.insystems.mobicare.model.endereco.bairro.BairroDao;
+import mz.co.insystems.mobicare.model.endereco.distrito.Distrito;
+import mz.co.insystems.mobicare.model.endereco.distrito.DistritoDao;
+import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
+import mz.co.insystems.mobicare.model.endereco.municipio.MunicipioDao;
+import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativo;
+import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativoDao;
+import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
+import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
+import mz.co.insystems.mobicare.model.farmacia.Farmacia;
+import mz.co.insystems.mobicare.model.farmacia.FarmaciaDao;
+import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
+import mz.co.insystems.mobicare.model.pessoa.Pessoa;
+import mz.co.insystems.mobicare.model.pessoa.PessoaDao;
+import mz.co.insystems.mobicare.model.user.User;
+import mz.co.insystems.mobicare.model.user.UserDao;
 
 /**
  * Created by Voloide Tamele on 9/29/2017.
@@ -54,7 +54,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private PostoAdministrativoDao postoAdministrativoDao;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public static DatabaseHelper getInstance() {
@@ -69,6 +69,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Farmacia.class);
             TableUtils.createTable(connectionSource, Endereco.class);
             TableUtils.createTable(connectionSource, Contacto.class);
+            TableUtils.createTable(connectionSource, Servico.class);
 
             TableUtils.createTable(connectionSource, Provincia.class);
             TableUtils.createTable(connectionSource, Distrito.class);

@@ -1,9 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="mz.co.insystems.mobicare.activities.login.registration.PersonalDataFragment">
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -174,7 +173,7 @@
                     android:id="@+id/provincia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:prompt="@string/app_name"
+                    android:prompt="@string/select_provincia"
                     style="@style/spinner_style"
                     android:layout_marginBottom="@dimen/dimen_5dp">
 
@@ -184,6 +183,8 @@
                     android:id="@+id/distrito"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:prompt="@string/select_distrito"
+                    style="@style/spinner_style"
                     android:layout_marginBottom="@dimen/dimen_5dp">
 
                 </Spinner>
@@ -192,6 +193,8 @@
                     android:id="@+id/municipio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:prompt="@string/select_municipio"
+                    style="@style/spinner_style"
                     android:layout_marginBottom="@dimen/dimen_5dp">
 
                 </Spinner>
@@ -200,6 +203,8 @@
                     android:id="@+id/posto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:prompt="@string/select_posto"
+                    style="@style/spinner_style"
                     android:layout_marginBottom="@dimen/dimen_5dp">
 
                 </Spinner>
@@ -209,6 +214,8 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:prompt="@string/select_bairro"
+                    style="@style/spinner_style"
                     android:layout_marginBottom="@dimen/dimen_5dp">
 
                 </Spinner>
@@ -251,11 +258,16 @@
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
+            <View
+                android:layout_marginTop="@dimen/dimen_14dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:background="@color/button_dark_back"/>
             <Button
                 android:id="@+id/btnContinue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_14dp"
+
                 android:textColor="@drawable/button_text_color"
                 android:background="@drawable/button_shape"
                 android:text="@string/continue_text"/>
@@ -264,4 +276,4 @@
 
     </ScrollView>
 
-</FrameLayout>
+</layout>

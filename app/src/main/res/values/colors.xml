@@ -9,4 +9,5 @@
     <color name="button_light_back">#f9dcca</color>
     <color name="button_dark_back">#f18e4f</color>
     <color name="hint_text_appearence">#a79991</color>
+    <color name="spinner_drop_down_color">#fef7f3</color>
 </resources>

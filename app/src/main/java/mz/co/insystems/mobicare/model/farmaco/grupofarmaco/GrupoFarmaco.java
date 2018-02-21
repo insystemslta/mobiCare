@@ -1,8 +1,5 @@
 package mz.co.insystems.mobicare.model.farmaco.grupofarmaco;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.base.BaseVO;
 
 
@@ -40,12 +37,5 @@ public class GrupoFarmaco extends BaseVO {
         this.designacao = designacao;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-    }
 
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        return null;
-    }
 }

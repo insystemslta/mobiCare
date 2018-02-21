@@ -5,14 +5,10 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.common.SimpleAdapter;
 import mz.co.insystems.mobicare.model.endereco.distrito.Distrito;
-import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
 
 /**
  * Created by voloide on 9/15/16.
@@ -42,10 +38,6 @@ public class PostoAdministrativo extends BaseVO implements SimpleAdapter {
 
     public PostoAdministrativo(int id) {
         this.id = id;
-    }
-
-    public PostoAdministrativo(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
     }
 
 
@@ -83,22 +75,4 @@ public class PostoAdministrativo extends BaseVO implements SimpleAdapter {
         this.distrito = distrito;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_POSTO_ID));
-        this.setDescricao(jsonObject.getString(COLUMN_POSTO_DESCRICAO));
-        this.setDesignacao(jsonObject.getString(COLUMN_POSTO_DESIGNACAO));
-        this.setDistrito(new Distrito(jsonObject.getJSONObject(Distrito.TABLE_NAME_DISTRITO)));
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(COLUMN_POSTO_ID,           this.getId());
-        jsonObject.put(COLUMN_POSTO_DESIGNACAO,   this.getDesignacao());
-        jsonObject.put(COLUMN_POSTO_DESCRICAO,    this.getDescricao());
-        jsonObject.put(Municipio.TABLE_NAME_MUNICIPIO,    this.getDistrito().generateJsonObject());
-        return jsonObject;
-    }
 }

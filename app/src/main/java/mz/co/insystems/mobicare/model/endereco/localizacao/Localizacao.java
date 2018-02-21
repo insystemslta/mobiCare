@@ -1,8 +1,5 @@
 package mz.co.insystems.mobicare.model.endereco.localizacao;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -135,13 +132,4 @@ public class Localizacao extends BaseVO {
         this.postoList = postoList;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        return null;
-    }
 }

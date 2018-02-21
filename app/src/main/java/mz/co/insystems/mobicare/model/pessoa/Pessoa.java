@@ -5,9 +5,6 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.contacto.Contacto;
@@ -44,10 +41,6 @@ public class Pessoa extends BaseVO {
         this.surname = surname;
         this.contacto = contacto;
         this.endereco = endereco;
-    }
-
-    public Pessoa(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
     }
 
     @Bindable
@@ -102,26 +95,4 @@ public class Pessoa extends BaseVO {
     }
 
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_ID));
-        this.setName(jsonObject.getString(COLUMN_NAME));
-        this.setSurname(jsonObject.getString(COLUMN_SURNAME));
-        this.setEndereco(new Endereco(jsonObject.getJSONObject(Endereco.TABLE_NAME_ENDERECO)));
-        this.setContacto(new Contacto(jsonObject.getJSONObject(Contacto.TABLE_NAME_CONTACT)));
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put(COLUMN_ID,       this.getId());
-            jsonObject.put(COLUMN_NAME,     this.getName());
-            jsonObject.put(COLUMN_SURNAME,  this.getSurname());
-            jsonObject.put(Contacto.TABLE_NAME_CONTACT, this.getContacto().generateJsonObject());
-            jsonObject.put(Endereco.TABLE_NAME_ENDERECO, this.getEndereco().generateJsonObject());
-
-        return jsonObject;
-    }
 }

@@ -5,9 +5,6 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.common.SimpleAdapter;
@@ -40,9 +37,7 @@ public class Provincia extends BaseVO implements SimpleAdapter{
         this.id = id;
     }
 
-    public Provincia(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
-    }
+
 
     @Bindable
     public String getDesignacao() {
@@ -80,20 +75,5 @@ public class Provincia extends BaseVO implements SimpleAdapter{
                 '}';
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
 
-        this.setId(jsonObject.getInt(COLUMN_PROVINCIA_ID));
-        this.setDescricao(jsonObject.getString(COLUMN_PROVINCIA_DESCRICAO));
-        this.setDesignacao(jsonObject.getString(COLUMN_PROVINCIA_DESIGNACAO));
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(COLUMN_PROVINCIA_ID,           this.getId());
-        jsonObject.put(COLUMN_PROVINCIA_DESIGNACAO,   this.getDesignacao());
-        jsonObject.put(COLUMN_PROVINCIA_DESCRICAO,    this.getDescricao());
-        return jsonObject;
-    }
 }

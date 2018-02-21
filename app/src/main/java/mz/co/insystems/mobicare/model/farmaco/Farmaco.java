@@ -4,9 +4,6 @@ import android.databinding.Bindable;
 
 import com.j256.ormlite.field.DatabaseField;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.farmaco.grupofarmaco.GrupoFarmaco;
@@ -88,12 +85,4 @@ public class Farmaco extends BaseVO {
         notifyPropertyChanged(BR.grupoFarmaco);
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        return null;
-    }
 }

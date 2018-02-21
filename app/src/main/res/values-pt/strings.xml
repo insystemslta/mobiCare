@@ -18,8 +18,12 @@
     <string name="mainMobileNumber">Mobile phone number</string>
     <string name="auxMobileNumber">Optional mobile phone</string>
     <string name="address">Address details</string>
-    <string name="municipal">Municipal</string>
+    <string name="municipal">Urbano</string>
     <string name="rural">Rural</string>
     <string name="rua_av">Street/Avenue</string>
     <string name="houseNumber">Door number</string>
+    <string name="select_provincia">Select the province</string>
+    <string name="select_distrito">Select the district</string>
+    <string name="select_posto">Select the posto</string>
+    <string name="select_bairro">Select the neibourghood</string>
 </resources>

@@ -2,20 +2,25 @@ package mz.co.insystems.mobicare.model.contacto;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.base.json.JsonParseble;
 
 /**
  * Created by voloide on 9/15/16.
  */
 @DatabaseTable(tableName = Contacto.TABLE_NAME_CONTACT, daoClass = ContactDaoImpl.class)
-public class Contacto extends BaseVO {
+public class Contacto extends BaseVO implements JsonParseble<Contacto> {
 
     public static final String TABLE_NAME_CONTACT			    = "contacto";
     public static final String COLUMN_CONTACT_ID 			    = "id";
@@ -34,6 +39,7 @@ public class Contacto extends BaseVO {
     @DatabaseField
     private String auxMobileNumber;
 
+    private ObjectMapper objectMapper;
 
     public Contacto(int id, String email, String mainMobileNumber, String auxMobileNumber) {
         this.id = id;
@@ -42,15 +48,17 @@ public class Contacto extends BaseVO {
         this.auxMobileNumber = auxMobileNumber;
     }
 
-    public Contacto(){}
+    public Contacto(){
+        this.objectMapper = new ObjectMapper();
+    }
+
+
 
     public Contacto(int id) {
         this.id = id;
     }
 
-    public Contacto(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
-    }
+
 
     @Bindable
     public int getId() {
@@ -93,21 +101,24 @@ public class Contacto extends BaseVO {
     }
 
     @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(Contacto.COLUMN_CONTACT_ID));
-        this.setEmail(jsonObject.getString(Contacto.COLUMN_CONTACT_EMAIL));
-        this.setMainMobileNumber(jsonObject.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_MAIN));
-        this.setAuxMobileNumber(jsonObject.getString(Contacto.COLUMN_CONTACT_PHONE_NUMBER_AUX));
+    public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(this));
+        return jsonObject;
     }
 
     @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject object = new JSONObject();
-        object.put(COLUMN_CONTACT_ID, this.getId());
-        object.put(COLUMN_CONTACT_EMAIL, this.getEmail());
-        object.put(COLUMN_CONTACT_PHONE_NUMBER_MAIN, this.getMainMobileNumber());
-        object.put(COLUMN_CONTACT_PHONE_NUMBER_AUX, this.getAuxMobileNumber());
-        return object;
+    public String toJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
     }
+
+    @Override
+    public Contacto fromJson(String jsonData) throws IOException {
+        return objectMapper.readValue(jsonData, Contacto.class);
+    }
+
+    @Override
+    public Contacto fromJsonObject(JSONObject response) throws IOException {
+        return objectMapper.readValue(String.valueOf(response), Contacto.class);
+    }
+
 }

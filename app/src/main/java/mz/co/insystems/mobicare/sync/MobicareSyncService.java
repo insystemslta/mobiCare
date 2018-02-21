@@ -33,7 +33,7 @@ public class MobicareSyncService {
 
 
     public static final String API_VERSION = "v1.0";
-    public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION+"/index.php/";
+    public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION;
 
     public static final String URI_AUTHORITY_TEST = "192.168.0.50";
 

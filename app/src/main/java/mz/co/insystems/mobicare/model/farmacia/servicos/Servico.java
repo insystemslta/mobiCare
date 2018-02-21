@@ -5,9 +5,6 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 
@@ -70,12 +67,5 @@ public class Servico extends BaseVO {
         this.estado = estado;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-    }
 
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        return null;
-    }
 }

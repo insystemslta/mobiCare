@@ -2,6 +2,7 @@ package mz.co.insystems.mobicare.model.user;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -9,8 +10,11 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.base.json.JsonParseble;
 import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.pessoa.Pessoa;
 import mz.co.insystems.mobicare.util.Utilities;
@@ -19,7 +23,7 @@ import mz.co.insystems.mobicare.util.Utilities;
  * Created by Voloide Tamele on 10/20/2017.
  */
 @DatabaseTable(tableName = User.TABLE_NAME, daoClass = UserDaoImpl.class)
-public class User extends BaseVO {
+public class User extends BaseVO implements JsonParseble <User>{
     public static final String TABLE_NAME           = "user";
     public static final String COLUMN_ID 			= "id";
     public static final String COLUMN_USER_NAME		= "user_name";
@@ -45,6 +49,8 @@ public class User extends BaseVO {
     @DatabaseField(columnName = COLUMN_FARMACIA_ID, foreign = true, foreignAutoRefresh = true)
     private Farmacia farmacia;
 
+    private String passwordConfirm;
+
 
     public User(int id) {
         this.id = id;
@@ -55,9 +61,19 @@ public class User extends BaseVO {
         this.password = Utilities.MD5Crypt(password);
     }
 
-    public User(JSONObject response) throws JSONException {
-        this.convertVoFromJSON(response);
+    public String getPasswordConfirm() {
+        return passwordConfirm;
     }
+
+    public boolean isPasswordConfirmed(){
+        return this.password.equals(this.passwordConfirm);
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+    }
+
+
 
     public boolean isActive(){
         return this.estado == 1;
@@ -99,6 +115,8 @@ public class User extends BaseVO {
         notifyPropertyChanged(BR.userName);
     }
 
+
+
     @Bindable
     public String getPassword() {
         return password;
@@ -139,30 +157,23 @@ public class User extends BaseVO {
     }
 
     @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_ID));
-        this.setUserName(jsonObject.getString(User.COLUMN_USER_NAME));
-        this.setNotCryptedPassword(jsonObject.getString(User.COLUMN_PASSWORD));
-        if (jsonObject.has(Pessoa.TABLE_NAME)) {
-            this.setPessoa(new Pessoa(jsonObject.getJSONObject(Pessoa.TABLE_NAME)));
-        }
-        if (jsonObject.has(Farmacia.TABLE_NAME_FARMACIA)) this.setFarmacia( new Farmacia(jsonObject.getJSONObject(Farmacia.TABLE_NAME_FARMACIA)));
-
+    public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
+        return null;
     }
 
     @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject userJsonObject = new JSONObject();
+    public String toJson() throws JsonProcessingException {
+        return null;
+    }
 
-        userJsonObject.put(COLUMN_ID,           this.getId());
-        userJsonObject.put(COLUMN_USER_NAME,    this.getUserName());
-        userJsonObject.put(COLUMN_PASSWORD,     this.getPassword());
-        userJsonObject.put(COLUMN_ESTADO,       this.getEstado());
+    @Override
+    public User fromJson(String jsonData) throws IOException {
+        return null;
+    }
 
-        if (this.getPessoa() != null)   userJsonObject.put(Pessoa.TABLE_NAME,               this.getPessoa().generateJsonObject());
-        if (this.getFarmacia() != null) userJsonObject.put(Farmacia.TABLE_NAME_FARMACIA,    this.getFarmacia().generateJsonObject());
-        return userJsonObject;
+    @Override
+    public User fromJsonObject(JSONObject response) throws IOException {
+        return null;
     }
 }
 

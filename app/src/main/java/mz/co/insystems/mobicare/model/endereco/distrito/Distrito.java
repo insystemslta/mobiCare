@@ -5,9 +5,6 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.common.SimpleAdapter;
@@ -41,9 +38,6 @@ public class Distrito extends BaseVO implements SimpleAdapter {
 
     public Distrito(){}
 
-    public Distrito(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
-    }
 
     @Bindable
     public String getDesignacao() {
@@ -86,22 +80,4 @@ public class Distrito extends BaseVO implements SimpleAdapter {
         this.provincia = provincia;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_DISTRITO_ID));
-        this.setDescricao(jsonObject.getString(COLUMN_DISTRITO_DESCRICAO));
-        this.setDesignacao(jsonObject.getString(COLUMN_DISTRITO_DESIGNACAO));
-        this.setProvincia(new Provincia(jsonObject.getJSONObject(Provincia.TABLE_NAME_PROVINCIA)));
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(COLUMN_DISTRITO_ID,           this.getId());
-        jsonObject.put(COLUMN_DISTRITO_DESIGNACAO,   this.getDesignacao());
-        jsonObject.put(COLUMN_DISTRITO_DESCRICAO,    this.getDescricao());
-        jsonObject.put(Provincia.TABLE_NAME_PROVINCIA,    this.getProvincia().generateJsonObject());
-        return jsonObject;
-    }
 }

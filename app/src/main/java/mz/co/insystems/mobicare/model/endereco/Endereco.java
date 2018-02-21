@@ -5,9 +5,6 @@ import android.databinding.Bindable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.model.endereco.bairro.Bairro;
@@ -65,9 +62,6 @@ public class Endereco extends BaseVO {
         this.id = id;
     }
 
-    public Endereco(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
-    }
 
     @Bindable
     public int getId() {
@@ -135,35 +129,4 @@ public class Endereco extends BaseVO {
         this.ncasa = ncasa;
     }
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_ENDERECO_ID));
-        this.setLatitude(jsonObject.getDouble(COLUMN_ENDERECO_LATITUDE));
-        this.setLongitude(jsonObject.getDouble(COLUMN_ENDERECO_LONGITUDE));
-        this.setNcasa(jsonObject.getString(COLUMN_ENDERECO_NCASA));
-        this.setRuaAvenida(jsonObject.getString(COLUMN_ENDERECO_RUA_AV));
-        if (jsonObject.has(Bairro.TABLE_NAME_BAIRRO)){
-            this.setBairro(new Bairro(jsonObject.getJSONObject(Bairro.TABLE_NAME_BAIRRO)));
-        }else
-            if (jsonObject.has(PostoAdministrativo.TABLE_NAME_POSTO)){
-                this.setPostoAdministrativo(new PostoAdministrativo(jsonObject.getJSONObject(PostoAdministrativo.TABLE_NAME_POSTO)));
-        }
-        this.setZona(jsonObject.getString(COLUMN_ENDERECO_ZONA));
-
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject object = new JSONObject();
-        object.put(COLUMN_ENDERECO_ID, this.getId());
-        object.put(COLUMN_ENDERECO_LATITUDE, this.getLatitude());
-        object.put(COLUMN_ENDERECO_LONGITUDE, this.getLongitude());
-        object.put(COLUMN_ENDERECO_BAIRRO_ID, this.getBairro());
-        object.put(COLUMN_ENDERECO_POSTO_ID, this.getPostoAdministrativo());
-        object.put(COLUMN_ENDERECO_RUA_AV, this.getRuaAvenida());
-        object.put(COLUMN_ENDERECO_ZONA, this.getZona());
-        object.put(COLUMN_ENDERECO_NCASA, this.getZona());
-        return object;
-    }
 }

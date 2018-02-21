@@ -45,6 +45,9 @@ public class PersonalDataFragment extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        PersonalDataFragmentDataBinding binding = DataBindingUtil.inflate(inflater,
+//                R.layout.fragment_personal_data, container, false);
+
         View view = inflater.inflate(R.layout.fragment_personal_data, container, false);
 
         provSpinner = view.findViewById(R.id.provincia);
@@ -58,10 +61,13 @@ public class PersonalDataFragment extends Fragment {
         localizacao = new Localizacao(getMyActivity(), isRural());
         loadProvinciaSpinner(localizacao.getProvinciaList());
 
+        loadSpinnerSchematics();
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 reloadLocalizacao();
+                loadSpinnerSchematics();
             }
         });
 
@@ -146,6 +152,20 @@ public class PersonalDataFragment extends Fragment {
         
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void loadSpinnerSchematics() {
+        if (isRural()){
+            munSpinner.setVisibility(View.GONE);
+            bairroSpinner.setVisibility(View.GONE);
+            distSpinner.setVisibility(View.VISIBLE);
+            postoSpinner.setVisibility(View.VISIBLE);
+        }else {
+            munSpinner.setVisibility(View.VISIBLE);
+            bairroSpinner.setVisibility(View.VISIBLE);
+            distSpinner.setVisibility(View.GONE);
+            postoSpinner.setVisibility(View.GONE);
+        }
     }
 
     private void reloadLocalizacao() {

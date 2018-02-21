@@ -6,9 +6,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Collection;
 
 import mz.co.insystems.mobicare.base.BaseVO;
@@ -55,9 +52,6 @@ public class Farmacia extends BaseVO {
 
     }
 
-    public Farmacia(JSONObject jsonObject) throws JSONException {
-        this.convertVoFromJSON(jsonObject);
-    }
 
     @Override
     public String toString() {
@@ -119,28 +113,5 @@ public class Farmacia extends BaseVO {
     }
 
 
-    @Override
-    public void convertVoFromJSON(JSONObject jsonObject) throws JSONException {
-
-        this.setId(jsonObject.getInt(COLUMN_FARMACIA_ID));
-        this.setNome(jsonObject.getString(COLUMN_FARMACIA_NOME));
-        this.setEstado(jsonObject.getInt(COLUMN_FARMACIA_ESTADO));
-        this.setContacto(new Contacto(jsonObject.getJSONObject(Contacto.TABLE_NAME_CONTACT)));
-        this.setEndereco(new Endereco(jsonObject.getJSONObject(Endereco.TABLE_NAME_ENDERECO)));
-
-    }
-
-    @Override
-    public JSONObject generateJsonObject() throws JSONException {
-        JSONObject userJsonObject = new JSONObject();
-
-        userJsonObject.put(COLUMN_FARMACIA_ID,      this.getId());
-        userJsonObject.put(COLUMN_FARMACIA_NOME,    this.getNome());
-        userJsonObject.put(COLUMN_FARMACIA_ESTADO,  this.getEstado());
-        userJsonObject.put(Contacto.TABLE_NAME_CONTACT,     this.getContacto().generateJsonObject());
-        userJsonObject.put(Endereco.TABLE_NAME_ENDERECO,    this.getEndereco().generateJsonObject());
-
-        return userJsonObject;
-    }
 
 }

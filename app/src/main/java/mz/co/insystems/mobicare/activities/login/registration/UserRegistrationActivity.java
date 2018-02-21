@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.android.volley.Request;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +35,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
     private FragmentManager manager = getSupportFragmentManager();
 
     public UserRegistrationActivity() {
-
+        setCurrentUser(new User());
     }
 
 
@@ -75,6 +76,8 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                 transaction.commit();
             }
         });*/
+
+
     }
 
     /*public void onClickButton(View view) {
@@ -96,6 +99,12 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         uri.appendPath(MobicareSyncService.SERVICE_ENTITY_USER);
         uri.appendPath(MobicareSyncService.SERVICE_CREATE);
         final String url = uri.build().toString();
+
+        Contacto contacto = new Contacto();
+        contacto.setId(1000);
+        contacto.setEmail("hdjdj@jsdkjsd");
+        contacto.setAuxMobileNumber("62627828");
+
 
 
 
@@ -121,7 +130,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
             @Override
             public void run() {
                 try {
-                    service.makeJsonObjectRequest(Request.Method.PUT, url, user.generateJsonObject(), user, new VolleyResponseListener() {
+                    service.makeJsonObjectRequest(Request.Method.PUT, url, user.toJsonObject(), user, new VolleyResponseListener() {
                         @Override
                         public void onError(String message) {
                             syncProgress.dismiss();
@@ -139,19 +148,17 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
     }
 
     private void createUser(JSONObject response) {
-        try {
-            getmUserDao().create(new User(response));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //User user = new User();
+        //user.fromJsonObject(response);
+        //getmUserDao().create(new User(response));
     }
 
 

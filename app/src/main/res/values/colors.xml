@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f1833c</color>
-    <color name="colorPrimaryDark">#ec6d1d</color>
-    <color name="colorAccent">#f8937f</color>
+    <color name="colorPrimary">#0f9d58</color>
+    <color name="colorPrimaryDark">#0b663a</color>
+    <color name="colorAccent">#1be784</color>
 
     <color name="black_overlay">#66000000</color>
     <color name="color_line">#c0c0c0</color>
-    <color name="button_light_back">#f9dcca</color>
-    <color name="button_dark_back">#f18e4f</color>
+    <color name="button_light_back">#e4f8ee</color>
+    <color name="button_dark_back">#068d4b</color>
     <color name="hint_text_appearence">#a79991</color>
     <color name="spinner_drop_down_color">#fef7f3</color>
 </resources>

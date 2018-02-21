@@ -7,9 +7,6 @@
         <variable
             name="user"
             type="mz.co.insystems.mobicare.model.user.User"/>
-        <variable
-            name="handler"
-            type="mz.co.insystems.mobicare.activities.login.registration.UserAccountFragment"/>
 
     </data>
 

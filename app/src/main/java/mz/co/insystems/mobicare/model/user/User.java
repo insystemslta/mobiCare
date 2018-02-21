@@ -2,6 +2,7 @@ package mz.co.insystems.mobicare.model.user;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -36,8 +37,11 @@ public class User extends BaseVO implements JsonParseble <User>{
 
     @DatabaseField(columnName = COLUMN_ID, id = true, generatedId = false)
     private int id;
+
+    @JsonProperty(User.COLUMN_USER_NAME)
     @DatabaseField(columnName = COLUMN_USER_NAME, dataType = DataType.STRING)
     private String userName;
+
     @DatabaseField
     private String password;
     @DatabaseField(columnName = COLUMN_ESTADO)

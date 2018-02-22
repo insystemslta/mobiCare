@@ -2,6 +2,7 @@ package mz.co.insystems.mobicare.model.endereco.bairro;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -13,6 +14,7 @@ import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
 /**
  * Created by voloide on 9/15/16.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Bairro.TABLE_NAME_BAIRRO, daoClass = BairroDaoImpl.class)
 public class Bairro extends BaseVO implements SimpleAdapter {
 

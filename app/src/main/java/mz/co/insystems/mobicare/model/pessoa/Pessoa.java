@@ -2,6 +2,8 @@ package mz.co.insystems.mobicare.model.pessoa;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -13,6 +15,7 @@ import mz.co.insystems.mobicare.model.endereco.Endereco;
 /**
  * Created by Voloide Tamele on 10/20/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Pessoa.TABLE_NAME, daoClass = PessoaDaoImpl.class)
 public class Pessoa extends BaseVO {
     public static final String TABLE_NAME 	        = "pessoa";
@@ -26,8 +29,12 @@ public class Pessoa extends BaseVO {
 
     @DatabaseField(columnName = COLUMN_ID, id = true)
     private int id;
+
+    @JsonProperty(Pessoa.COLUMN_NAME)
     @DatabaseField(columnName = COLUMN_NAME)
     private String name;
+
+    @JsonProperty(Pessoa.COLUMN_SURNAME)
     @DatabaseField(columnName = COLUMN_SURNAME)
     private String surname;
     @DatabaseField(columnName = COLUMN_CONTACT_ID, foreign = true, foreignAutoRefresh = true)

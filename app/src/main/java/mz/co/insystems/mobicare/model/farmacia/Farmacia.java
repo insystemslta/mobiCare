@@ -2,6 +2,7 @@ package mz.co.insystems.mobicare.model.farmacia;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -16,6 +17,7 @@ import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
 /**
  * Created by Voloide Tamele on 10/23/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Farmacia.TABLE_NAME_FARMACIA, daoClass = FarmaciaDaoImpl.class)
 public class Farmacia extends BaseVO {
     public static final String TABLE_NAME_FARMACIA			                = "farmacia";

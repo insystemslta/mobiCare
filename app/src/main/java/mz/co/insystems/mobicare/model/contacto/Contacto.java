@@ -2,6 +2,7 @@ package mz.co.insystems.mobicare.model.contacto;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DatabaseField;
@@ -19,6 +20,7 @@ import mz.co.insystems.mobicare.base.json.JsonParseble;
 /**
  * Created by voloide on 9/15/16.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Contacto.TABLE_NAME_CONTACT, daoClass = ContactDaoImpl.class)
 public class Contacto extends BaseVO implements JsonParseble<Contacto> {
 
@@ -46,6 +48,7 @@ public class Contacto extends BaseVO implements JsonParseble<Contacto> {
         this.email = email;
         this.mainMobileNumber = mainMobileNumber;
         this.auxMobileNumber = auxMobileNumber;
+        this.objectMapper = new ObjectMapper();
     }
 
     public Contacto(){

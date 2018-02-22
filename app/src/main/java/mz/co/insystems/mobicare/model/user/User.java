@@ -2,8 +2,10 @@ package mz.co.insystems.mobicare.model.user;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -23,6 +25,7 @@ import mz.co.insystems.mobicare.util.Utilities;
 /**
  * Created by Voloide Tamele on 10/20/2017.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = User.TABLE_NAME, daoClass = UserDaoImpl.class)
 public class User extends BaseVO implements JsonParseble <User>{
     public static final String TABLE_NAME           = "user";
@@ -34,6 +37,7 @@ public class User extends BaseVO implements JsonParseble <User>{
     public static final String COLUMN_FARMACIA_ID 	= "farmacia_id";
 
     private static final long serialVersionUID = 1L;
+    private ObjectMapper objectMapper;
 
     @DatabaseField(columnName = COLUMN_ID, id = true, generatedId = false)
     private int id;
@@ -83,7 +87,9 @@ public class User extends BaseVO implements JsonParseble <User>{
         return this.estado == 1;
     }
 
-    public User() {}
+    public User() {
+        this.objectMapper = new ObjectMapper();
+    }
 
     @Bindable
     public int getId() {
@@ -162,22 +168,23 @@ public class User extends BaseVO implements JsonParseble <User>{
 
     @Override
     public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
-        return null;
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(this));
+        return jsonObject;
     }
 
     @Override
     public String toJson() throws JsonProcessingException {
-        return null;
+        return objectMapper.writeValueAsString(this);
     }
 
     @Override
     public User fromJson(String jsonData) throws IOException {
-        return null;
+        return objectMapper.readValue(jsonData, User.class);
     }
 
     @Override
     public User fromJsonObject(JSONObject response) throws IOException {
-        return null;
+        return objectMapper.readValue(String.valueOf(response), User.class);
     }
 }
 

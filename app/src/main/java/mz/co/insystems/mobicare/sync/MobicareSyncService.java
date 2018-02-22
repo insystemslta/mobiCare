@@ -4,9 +4,13 @@ import android.net.Uri;
 import android.util.Base64;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
@@ -35,10 +39,11 @@ public class MobicareSyncService {
     public static final String API_VERSION = "v1.0";
     public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION;
 
-    public static final String URI_AUTHORITY_TEST = "192.168.0.50";
+    public static final String URI_AUTHORITY_TEST = "192.168.100.30";
 
     public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getFullCredentials";
     public static final String SERVICE_ENTITY_USER = "user";
+    public static final String SERVICE_ENTITY_CONTACT = "contacto";
 
     public static final String SERVICE_CREATE = "create";
 
@@ -66,6 +71,12 @@ public class MobicareSyncService {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error instanceof NetworkError) {
+                        } else if (error instanceof ServerError) {
+                        } else if (error instanceof AuthFailureError) {
+                        } else if (error instanceof ParseError) {
+                        } else if (error instanceof NoConnectionError) {
+                        } else if (error instanceof TimeoutError) {}
                         listener.onError(error.toString());
                     }
                 }) {
@@ -106,6 +117,7 @@ public class MobicareSyncService {
                 return buildAuthHeaders(user);
             }
         };
+
         // Access the RequestQueue through singleton class.
         NetworkController.getInstance().addToRequestQueue(jsonObjectRequest, JSON_OBJECT_REQUEST_TAG);
     }

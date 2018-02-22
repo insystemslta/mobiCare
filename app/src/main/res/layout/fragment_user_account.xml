@@ -17,6 +17,8 @@
             android:layout_height="match_parent"
             android:background="#fff9f5">
 
+
+
             <LinearLayout
                 android:id="@+id/inputs"
                 android:orientation="vertical"
@@ -27,7 +29,7 @@
                 <ImageView
                     android:layout_width="@dimen/user_registration_imview_width"
                     android:layout_height="@dimen/user_registration_imview_heigth"
-                    android:layout_gravity="start"
+                    android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher"
                     />
 
@@ -35,7 +37,7 @@
                     android:id="@+id/user_registration_title_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
+                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dimen_5dp"
                     android:layout_marginBottom="@dimen/dimen_14dp"
                     style="@style/user_registration_title_text"
@@ -50,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginTop="@dimen/dimen_5dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
                     android:layout_marginBottom="@dimen/dimen_14dp"
                     style="@style/sign_up_text"
                     android:text="@string/sign_up_text" />
@@ -126,9 +128,6 @@
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
-
-
-
 
             </LinearLayout>
 

@@ -13,8 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.FragmentChangeListener;
@@ -45,7 +45,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         setContentView(R.layout.activity_user_registration);
         addSimpleToolbar();
 
-
+        doUserSync();
 
         if (savedInstanceState == null){
             UserAccountFragment accountFragment = new UserAccountFragment();
@@ -60,10 +60,10 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
 
 
 
+/*
 
 
-
-        /*final Button continuar 			= findViewById(R.id.btnContinue);
+        final Button continuar 			= findViewById(R.id.btnContinue);
 
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +90,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
     */
 
     private void doUserSync(){
+
         syncProgress = ProgressDialog.show(UserRegistrationActivity.this, ""
                 , getString(R.string.user_sync_in_progress));
         syncProgress.setCancelable(true);
@@ -100,15 +101,6 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         uri.appendPath(MobicareSyncService.SERVICE_CREATE);
         final String url = uri.build().toString();
 
-        Contacto contacto = new Contacto();
-        contacto.setId(1000);
-        contacto.setEmail("hdjdj@jsdkjsd");
-        contacto.setAuxMobileNumber("62627828");
-
-
-
-
-
         final User user = new User();
         user.setUserName("844441662");
         user.setPassword("1000");
@@ -117,14 +109,15 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         user.getPessoa().setSurname("Horrr");
         user.getPessoa().setContacto(new Contacto(100, "voloidet@gmail.com", "637278292", "73872992"));
         user.getPessoa().setEndereco(new Endereco(34.778893,78.9887));
+
         user.setEstado(1);
 
-
-        try {
+        final Contacto contacto = new Contacto(100, "voloidet@gmail.com", "637278292", "73872992");
+        /*try {
             List<User> userList = getmUserDao().queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         new Thread(new Runnable() {
             @Override
@@ -156,9 +149,14 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
     }
 
     private void createUser(JSONObject response) {
-        //User user = new User();
-        //user.fromJsonObject(response);
-        //getmUserDao().create(new User(response));
+        User user = new User();
+        try {
+            getmUserDao().create(user.fromJsonObject(response));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -169,5 +167,11 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         fragmentTransaction.replace(R.id.root_container, fragment, fragment.toString());
         fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        syncProgress.dismiss();
     }
 }

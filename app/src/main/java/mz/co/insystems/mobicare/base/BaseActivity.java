@@ -24,6 +24,7 @@ import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdminist
 import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.model.user.UserDao;
+import mz.co.insystems.mobicare.sync.MobicareSyncService;
 
 
 /**
@@ -40,6 +41,8 @@ public class BaseActivity extends AppCompatActivity {
     private MunicipioDao municipioDao;
     private PostoAdministrativoDao postoDao;
     private BairroDao bairroDao;
+
+    protected MobicareSyncService service;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -60,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public BaseActivity(){
-
+        this.service = new MobicareSyncService();
     }
 
     public User getCurrentUser() {

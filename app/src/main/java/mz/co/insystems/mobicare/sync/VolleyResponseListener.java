@@ -1,5 +1,6 @@
 package mz.co.insystems.mobicare.sync;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -10,4 +11,6 @@ public interface VolleyResponseListener {
     void onError(String message);
 
     void onResponse(JSONObject response, int myStatusCode);
+
+    void onResponse(JSONArray response, int myStatusCode);
 }

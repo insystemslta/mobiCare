@@ -9,6 +9,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
+import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.model.contacto.ContactDao;
 import mz.co.insystems.mobicare.model.contacto.Contacto;
 import mz.co.insystems.mobicare.model.endereco.Endereco;
@@ -54,7 +55,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private PostoAdministrativoDao postoAdministrativoDao;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
     }
 
     public static DatabaseHelper getInstance() {

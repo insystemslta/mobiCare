@@ -9,16 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.FragmentChangeListener;
 import mz.co.insystems.mobicare.databinding.FragmentUserAccountBinding;
-import mz.co.insystems.mobicare.model.contacto.Contacto;
 import mz.co.insystems.mobicare.model.user.User;
 
 /**
@@ -49,34 +42,7 @@ public class UserAccountFragment extends Fragment {
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Contacto contacto = new Contacto();
-                contacto.setId(1000);
-                contacto.setEmail("hdjdj@jsdkjsd");
-                contacto.setAuxMobileNumber("62627828");
-
-                try {
-                    contacto.toJson();
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    contacto.toJsonObject();
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                //System.out.println(contacto.toJson());
-                Contacto contacto1 = new Contacto();
-                try {
-                    contacto1 = contacto1.fromJsonObject(contacto.toJsonObject());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                continueRegistrtion();
 
             }
         });
@@ -85,13 +51,14 @@ public class UserAccountFragment extends Fragment {
 
     public void continueRegistrtion(){
         getMyActivity().setCurrentUser(user);
+        nextFragment();
     }
 
     private UserRegistrationActivity getMyActivity() {
         return (UserRegistrationActivity) getActivity();
     }
 
-    public void showOtherFragment(){
+    public void nextFragment(){
         Fragment fr = new PersonalDataFragment();
         FragmentChangeListener fc=(FragmentChangeListener)getActivity();
         fc.replaceFragment(fr);

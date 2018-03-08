@@ -2,11 +2,19 @@ package mz.co.insystems.mobicare.model.endereco.municipio;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.base.json.JsonParseble;
 import mz.co.insystems.mobicare.common.SimpleAdapter;
 import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 
@@ -14,7 +22,7 @@ import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
  * Created by voloide on 9/15/16.
  */
 @DatabaseTable(tableName = Municipio.TABLE_NAME_MUNICIPIO, daoClass = MunicipioDaoImpl.class)
-public class Municipio extends BaseVO implements SimpleAdapter {
+public class Municipio extends BaseVO implements SimpleAdapter, JsonParseble<Municipio> {
 
     public static final String TABLE_NAME_MUNICIPIO                    = "municipio";
     public static final String COLUMN_MUNICIPIO_ID 			        = "id";
@@ -34,6 +42,8 @@ public class Municipio extends BaseVO implements SimpleAdapter {
 
     @DatabaseField(columnName = COLUMN_MUNICIPIO_PROVINCIA_ID, foreign = true, foreignAutoRefresh = true)
     private Provincia provincia;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
 
     public Municipio(){}
@@ -80,4 +90,24 @@ public class Municipio extends BaseVO implements SimpleAdapter {
         this.provincia = provincia;
     }
 
+    @Override
+    public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(this));
+        return jsonObject;
+    }
+
+    @Override
+    public String toJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
+    }
+
+    @Override
+    public Municipio fromJson(String jsonData) throws IOException {
+        return objectMapper.readValue(jsonData, Municipio.class);
+    }
+
+    @Override
+    public Municipio fromJsonObject(JSONObject response) throws IOException {
+        return objectMapper.readValue(String.valueOf(response), Municipio.class);
+    }
 }

@@ -11,7 +11,7 @@
     <string name="continue_text">Continuar</string>
     <string name="email_address">Email address</string>
     <string name="confirm_password">Confirm your password</string>
-    <string name="create_password">Create your password</string>
+    <string name="create_password">Digite a Senha</string>
     <string name="regist_user">Create account</string>
     <string name="user_name">Enter your user name</string>
     <string name="surname">Surname</string>
@@ -27,4 +27,7 @@
     <string name="select_posto">Select the posto</string>
     <string name="select_bairro">Select the neibourghood</string>
     <string name="localizacao_settings_sync_in_progress">Location settings sync in progress, please wait...</string>
+    <string name="login_text">Entrar</string>
+    <string name="user_registration_link_text">Criar Conta</string>
+    <string name="user_forgotten_pass_link_text">Esqueceu a senha?</string>
 </resources>

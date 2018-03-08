@@ -36,5 +36,16 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao, 
                 .and()
                 .eq(User.COLUMN_PASSWORD, user.getPassword()).queryForFirst() != null;
     }
+    @Override
+    public User authenticateUser(User user) throws SQLException {
+        return this.queryBuilder().where()
+                .eq(User.COLUMN_USER_NAME, user.getUserName())
+                .and()
+                .eq(User.COLUMN_PASSWORD, user.getPassword()).queryForFirst();
+    }
 
+    @Override
+    public void deleteAllUser() throws SQLException {
+        deleteBuilder().delete();
+    }
 }

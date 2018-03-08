@@ -12,4 +12,7 @@ public interface UserDao extends Dao<User, Integer>{
 
     boolean authenticate(User user) throws SQLException;
 
+    public User authenticateUser(User user) throws SQLException;
+
+    public void deleteAllUser() throws SQLException;
 }

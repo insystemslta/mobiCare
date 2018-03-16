@@ -1,34 +1,21 @@
 package mz.co.insystems.mobicare.activities.login;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.ActionBar;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
-
 import mz.co.insystems.mobicare.R;
-import mz.co.insystems.mobicare.activities.login.registration.UserRegistrationActivity;
 import mz.co.insystems.mobicare.base.BaseActivity;
 import mz.co.insystems.mobicare.databinding.ActivityLoginBinding;
 import mz.co.insystems.mobicare.model.user.User;
-import mz.co.insystems.mobicare.model.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 import mz.co.insystems.mobicare.util.Constants;
@@ -37,7 +24,7 @@ import mz.co.insystems.mobicare.util.Constants;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements LoginActions{
     User user= new User();
     View view;
     @Override
@@ -45,9 +32,10 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         ActivityLoginBinding activityLoginBinding = DataBindingUtil.setContentView(this,R.layout.activity_login);
+        LoginManager loginManager = new LoginManager(LoginActivity.this);
 
         activityLoginBinding.setUser(user);
-
+        activityLoginBinding.setPresenter(loginManager);
      //   try {
          //   getmUserDao().create(createUser());
   //      } catch (SQLException e) {
@@ -55,7 +43,7 @@ public class LoginActivity extends BaseActivity {
       //  }
         view = activityLoginBinding.getRoot();
 
-      Button btnLogin= view.findViewById(R.id.btnLogin);
+      /*Button btnLogin= view.findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,9 +69,11 @@ public class LoginActivity extends BaseActivity {
 
                 }
             }
-        });
+        });*/
 
     }
+
+
 private User createUser(){
         return new User("Bento", "bento18");
         }
@@ -115,6 +105,9 @@ private User createUser(){
                            // syncProgress.dismiss();
 
                         }
+
+                        @Override
+                        public void onResponse(JSONArray response, int myStatusCode) {}
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -124,4 +117,11 @@ private User createUser(){
             }
         }).start();
     }
+
+    @Override
+    public void navigateBack(User user) {
+        if (user.isActive()){
+            return;
+        }
     }
+}

@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.FragmentChangeListener;
@@ -27,10 +29,11 @@ import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 
-public class UserRegistrationActivity extends BaseActivity implements FragmentChangeListener{
+public class UserRegistrationActivity extends BaseActivity implements FragmentChangeListener, Runnable{
 
     private ProgressDialog syncProgress;
     private FragmentManager manager;
+    private List<String> errorList;
 
     public UserRegistrationActivity() {
         super();
@@ -43,7 +46,11 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         setContentView(R.layout.activity_user_registration);
         addSimpleToolbar();
 
-        setUpAppSettings();
+        try {
+            setUpAppSettings();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
         if (savedInstanceState == null){
@@ -55,24 +62,28 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
         }
     }
 
-    private void setUpAppSettings() {
+    private void setUpAppSettings() throws InterruptedException {
+        initProgress();
+
         try {
-            if (getProvinciaDao().queryForAll().isEmpty()) doLocalizacoesSync();
+            if (!getProvinciaDao().queryForAll().isEmpty())
+                try {
+                    doLocalizacoesSync();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void doLocalizacoesSync() {
-        initProgress();
+    private void doLocalizacoesSync() throws InterruptedException {
+        //syncProvincias();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 syncProvincias();
-                syncDistritos();
-                syncMunicipios();
-                syncPostos();
-                syncBairros();
             }
         }).start();
     }
@@ -100,7 +111,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     try {
                         Bairro bairro = new Bairro();
                         bairro = bairro.fromJsonObject(response.getJSONObject(i));
-                        getBairroDao().create(bairro);
+                        getBairroDao().createIfNotExists(bairro);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -109,7 +120,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                         e.printStackTrace();
                     }
                 }
-                afterSyncFinish();
+                syncProgress.dismiss();
             }
         });
     }
@@ -131,7 +142,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     try {
                         PostoAdministrativo postoAdministrativo = new PostoAdministrativo();
                         postoAdministrativo = postoAdministrativo.fromJsonObject(response.getJSONObject(i));
-                        getPostoDao().create(postoAdministrativo);
+                        getPostoDao().createIfNotExists(postoAdministrativo);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -140,7 +151,9 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                         e.printStackTrace();
                     }
                 }
-                afterSyncFinish();
+                if (noSyncError()){
+                    syncMunicipios();
+                }else terminateSyncWithError();
             }
         });
     }
@@ -162,7 +175,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     try {
                         Municipio municipio = new Municipio();
                         municipio = municipio.fromJsonObject(response.getJSONObject(i));
-                        getMunicipioDao().create(municipio);
+                        getMunicipioDao().createIfNotExists(municipio);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -171,7 +184,9 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                         e.printStackTrace();
                     }
                 }
-                afterSyncFinish();
+                if (noSyncError()){
+                    syncBairros();
+                }else terminateSyncWithError();
             }
         });
     }
@@ -193,7 +208,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     try {
                         Distrito distrito = new Distrito();
                         distrito = distrito.fromJsonObject(response.getJSONObject(i));
-                        getDistritoDao().create(distrito);
+                        getDistritoDao().createIfNotExists(distrito);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -202,7 +217,9 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                         e.printStackTrace();
                     }
                 }
-                afterSyncFinish();
+                if (noSyncError()) {
+                    syncPostos();
+                }else terminateSyncWithError();
             }
         });
     }
@@ -224,7 +241,7 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                     try {
                         Provincia provincia = new Provincia();
                         provincia = provincia.fromJsonObject(response.getJSONObject(i));
-                        getProvinciaDao().create(provincia);
+                        getProvinciaDao().createIfNotExists(provincia);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -233,18 +250,30 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
                         e.printStackTrace();
                     }
                 }
-                afterSyncFinish();
+                if (noSyncError()) {
+                    syncDistritos();
+                }else {
+                    terminateSyncWithError();
+                }
+
             }
         });
     }
 
-    private void afterSyncFinish() {
+    private void terminateSyncWithError() {
         syncProgress.dismiss();
     }
 
+    private boolean noSyncError() {
+        return errorList == null || errorList.isEmpty();
+    }
+
     private void onSyncError(String job, String error){
+        if (errorList == null) errorList = new ArrayList<>();
+        errorList.add(job+" "+error);
+
         syncProgress.dismiss();
-        showMessageDialog(getString(R.string.error_msg_sync_failed));
+        //showMessageDialog(error);
     }
 
     private String buildGetAllUrlString(String entinty) {
@@ -267,5 +296,19 @@ public class UserRegistrationActivity extends BaseActivity implements FragmentCh
     protected void onPause() {
         super.onPause();
         syncProgress.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void run() {
+        try {
+            doLocalizacoesSync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

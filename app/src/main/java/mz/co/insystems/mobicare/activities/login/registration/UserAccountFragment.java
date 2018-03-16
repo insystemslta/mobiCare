@@ -32,8 +32,6 @@ public class UserAccountFragment extends Fragment {
         FragmentUserAccountBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_user_account, container, false);
         View view = binding.getRoot();
 
-
-
         user = getMyActivity().getCurrentUser();
 
         binding.setUser(user);
@@ -43,7 +41,6 @@ public class UserAccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 continueRegistrtion();
-
             }
         });
         return view;
@@ -63,6 +60,4 @@ public class UserAccountFragment extends Fragment {
         FragmentChangeListener fc=(FragmentChangeListener)getActivity();
         fc.replaceFragment(fr);
     }
-
-
 }

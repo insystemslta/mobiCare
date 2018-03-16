@@ -52,6 +52,7 @@ public class MobicareSyncService {
 
     public static final String JSON_OBJECT_REQUEST_TAG = "json_obj_req";
     public static final String JSON_ARRAY_REQUEST_TAG = "json_array_req";
+    public static final String SERVICE_AUTHENTICATE = "authenticate";
 
     private static int myStatusCode;
 
@@ -81,7 +82,7 @@ public class MobicareSyncService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String errorMsg = generateErrorMsg(error);
-                listener.onError(error.toString());
+                listener.onError(errorMsg);
             }
         });
 
@@ -91,12 +92,19 @@ public class MobicareSyncService {
 
     private String generateErrorMsg(VolleyError error){
         if (error instanceof NetworkError) {
+            return "A network error as occured ";
         } else if (error instanceof ServerError) {
+            return "A server error as occured ";
         } else if (error instanceof AuthFailureError) {
+            return "An authentication error as occured ";
         } else if (error instanceof ParseError) {
+            return "A parse error as occured ";
         } else if (error instanceof NoConnectionError) {
-        } else if (error instanceof TimeoutError) {}
-        return null;
+            return "No connection ";
+        } else if (error instanceof TimeoutError) {
+            return "Connection timeout";
+        }
+        return error.toString();
     }
 
     /**
@@ -173,28 +181,4 @@ public class MobicareSyncService {
         headerMap.put("Authorization", "Basic " + base64EncodedCredentials);
         return headerMap;
     }
-
-   /* public static String checkErrorType(VolleyError error) {
-        String str = "";
-        if (error instanceof NoConnectionError) {
-            str = Constants.IS_NOT_NETWORK;
-        } else if (error instanceof AuthFailureError) {
-            str = ErrorCode.AUTH_FAILED;
-        } else if (error instanceof TimeoutError) {
-            str = ErrorCode.CONNECTION_TIMEOUT;
-        } else if (error instanceof ParseError) {
-            str = ErrorCode.PARSE_DATA_ERROR;
-        } else if (error instanceof ServerError) {
-            str = ErrorCode.SERVER_ERROR;
-        } else if (error instanceof HttpError) {
-            HttpError httpError = (HttpError) error;
-            str = httpError.getMessage();
-            if (TextUtils.isEmpty(str)) {
-                str = ErrorCode.REQUEST_ERROR;
-            }
-        } else {
-            str = ErrorCode.REQUEST_ERROR;
-        }
-        return str;
-    }*/
 }

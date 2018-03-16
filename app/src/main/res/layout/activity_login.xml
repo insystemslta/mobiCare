@@ -3,10 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.login.LoginActivity">
 
-    <data>
+    <data class="ActivityLoginBinding">
         <variable
             name="user"
             type="mz.co.insystems.mobicare.model.user.User"/>
+
+        <variable
+            name="presenter"
+            type="mz.co.insystems.mobicare.activities.login.LoginManager"/>
 
     </data>
 
@@ -63,7 +67,7 @@
                     android:hint="@string/user_name"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_5dp"
-                    android:text="@{user.userName}"
+                    android:text="@={user.userName}"
                     style="@style/edit_text_style"
                     android:background="@drawable/edit_text_border"/>
             </android.support.design.widget.TextInputLayout>
@@ -83,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_5dp"
                     android:inputType="textPassword"
-                    android:text="@{user.password}"
+                    android:text="@={user.password}"
                     style="@style/edit_text_style"
                     android:background="@drawable/edit_text_border"/>
 
@@ -102,6 +106,7 @@
                 android:layout_alignParentBottom="true"
                 android:textColor="@drawable/button_text_color"
                 android:background="@drawable/button_shape"
+                android:onClick="@{(view) -> presenter.login(user)}"
                 android:text="@string/login_text"/>
 
             <TextView

@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities.login.registration;
+package mz.co.insystems.mobicare.activities.user.registration.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
 import mz.co.insystems.mobicare.common.SimpleSpinnerAdapter;
 import mz.co.insystems.mobicare.model.endereco.bairro.Bairro;
 import mz.co.insystems.mobicare.model.endereco.distrito.Distrito;

@@ -30,4 +30,5 @@
     <string name="login_text">Entrar</string>
     <string name="user_registration_link_text">Criar Conta</string>
     <string name="user_forgotten_pass_link_text">Esqueceu a senha?</string>
+    <string name="activity_login_alert_ok">OK</string>
 </resources>

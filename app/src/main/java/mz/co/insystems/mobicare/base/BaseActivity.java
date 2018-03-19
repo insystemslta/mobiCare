@@ -3,8 +3,7 @@ package mz.co.insystems.mobicare.base;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -30,7 +29,7 @@ import mz.co.insystems.mobicare.sync.MobicareSyncService;
 /**
  * Created by Voloide Tamele on 9/19/2017.
  */
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper = null;
     protected String TAG;
     private User currentUser;
@@ -52,14 +51,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-
     }
 
     public BaseActivity(){
@@ -99,6 +90,14 @@ public class BaseActivity extends AppCompatActivity {
         actionbar.setIcon(icon);
         return toolbar;
     }
+
+    public String buildGetAllUrlString(String entinty) {
+        Uri.Builder uri =  service.initServiceUri();
+        uri.appendPath(entinty);
+        uri.appendPath(MobicareSyncService.SERVICE_GET_ALL);
+        return uri.build().toString();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

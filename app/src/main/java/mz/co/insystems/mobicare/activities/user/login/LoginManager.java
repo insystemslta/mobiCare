@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities.login;
+package mz.co.insystems.mobicare.activities.user.login;
 
 import mz.co.insystems.mobicare.model.user.User;
 
@@ -7,9 +7,9 @@ import mz.co.insystems.mobicare.model.user.User;
  */
 
 public class LoginManager {
-    private LoginActivity loginActions;
+    private LoginActions loginActions;
 
-    public LoginManager(LoginActivity loginActions) {
+    public LoginManager(LoginActions loginActions) {
         this.loginActions = loginActions;
     }
 

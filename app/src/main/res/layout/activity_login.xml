@@ -1,7 +1,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.login.LoginActivity">
+    tools:context=".activities.user.login.LoginActivity">
 
     <data class="ActivityLoginBinding">
         <variable
@@ -10,7 +10,7 @@
 
         <variable
             name="presenter"
-            type="mz.co.insystems.mobicare.activities.login.LoginManager"/>
+            type="mz.co.insystems.mobicare.activities.user.login.LoginManager"/>
 
     </data>
 

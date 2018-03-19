@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities.login;
+package mz.co.insystems.mobicare.activities.user.login;
 
 import android.databinding.DataBindingUtil;
 import android.net.Uri;

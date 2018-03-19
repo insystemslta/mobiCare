@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities.login.registration;
+package mz.co.insystems.mobicare.activities.user.registration.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -7,10 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import mz.co.insystems.mobicare.R;
-import mz.co.insystems.mobicare.activities.FragmentChangeListener;
+import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
+import mz.co.insystems.mobicare.common.FragmentChangeListener;
 import mz.co.insystems.mobicare.databinding.FragmentUserAccountBinding;
 import mz.co.insystems.mobicare.model.user.User;
 
@@ -33,22 +33,12 @@ public class UserAccountFragment extends Fragment {
         View view = binding.getRoot();
 
         user = getMyActivity().getCurrentUser();
+        if (user == null) user = new User();
 
         binding.setUser(user);
+        binding.setPresenter(getMyActivity().getPresenter());
 
-        Button continuar = view.findViewById(R.id.btnContinue);
-        continuar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                continueRegistrtion();
-            }
-        });
         return view;
-    }
-
-    public void continueRegistrtion(){
-        getMyActivity().setCurrentUser(user);
-        nextFragment();
     }
 
     private UserRegistrationActivity getMyActivity() {

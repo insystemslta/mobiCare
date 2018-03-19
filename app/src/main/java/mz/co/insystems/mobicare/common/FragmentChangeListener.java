@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities;
+package mz.co.insystems.mobicare.common;
 
 import android.support.v4.app.Fragment;
 

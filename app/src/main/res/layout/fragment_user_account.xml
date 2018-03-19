@@ -1,12 +1,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="mz.co.insystems.mobicare.activities.login.registration.UserAccountFragment">
+    tools:context=".activities.user.registration.fragment.UserAccountFragment">
 
     <data>
         <variable
             name="user"
             type="mz.co.insystems.mobicare.model.user.User"/>
+        <variable
+            name="presenter"
+            type="mz.co.insystems.mobicare.activities.user.registration.UserRegistrationPresenterImpl"/>
 
     </data>
 
@@ -83,7 +86,7 @@
                         android:hint="@string/user_name"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
-                        android:text="@{user.userName}"
+                        android:text="@={user.userName}"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -103,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
                         android:inputType="textPassword"
-                        android:text="@{user.password}"
+                        android:text="@={user.password}"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
 
@@ -124,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
                         android:inputType="textPassword"
-                        android:text="@{user.passwordConfirm}"
+                        android:text="@={user.passwordConfirm}"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -145,6 +148,7 @@
                 android:layout_alignParentBottom="true"
                 android:textColor="@drawable/button_text_color"
                 android:background="@drawable/button_shape"
+                android:onClick="@{(view) -> presenter.continueRegistration(user)}"
                 android:text="@string/continue_text"/>
 
         </RelativeLayout>

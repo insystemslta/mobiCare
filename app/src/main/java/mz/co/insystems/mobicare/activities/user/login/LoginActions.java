@@ -8,5 +8,9 @@ import mz.co.insystems.mobicare.model.user.User;
 
 interface LoginActions {
 
-    void navigateBack(User user);
+    void doLogin(User user);
+
+    void initNewUserCreation();
+
+    void initPasswordReset();
 }

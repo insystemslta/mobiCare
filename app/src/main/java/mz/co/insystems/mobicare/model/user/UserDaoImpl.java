@@ -30,14 +30,14 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao, 
     }
 
     @Override
-    public boolean authenticate(User user) throws SQLException {
+    public boolean isAuthentic(User user) throws SQLException {
         return this.queryBuilder().where()
                 .eq(User.COLUMN_USER_NAME, user.getUserName())
                 .and()
                 .eq(User.COLUMN_PASSWORD, user.getPassword()).queryForFirst() != null;
     }
     @Override
-    public User authenticateUser(User user) throws SQLException {
+    public User getByCredencials(User user) throws SQLException {
         return this.queryBuilder().where()
                 .eq(User.COLUMN_USER_NAME, user.getUserName())
                 .and()

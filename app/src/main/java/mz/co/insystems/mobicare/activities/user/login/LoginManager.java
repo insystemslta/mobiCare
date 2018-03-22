@@ -14,6 +14,14 @@ public class LoginManager {
     }
 
     public void login(User user){
-        loginActions.navigateBack(user);
+        loginActions.doLogin(user);
+    }
+
+    public void initNewUserCreation(){
+        loginActions.initNewUserCreation();
+    }
+
+    public void initPasswordReset(){
+        loginActions.initPasswordReset();
     }
 }

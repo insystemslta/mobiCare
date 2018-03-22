@@ -11,47 +11,38 @@
         <variable
             name="presenter"
             type="mz.co.insystems.mobicare.activities.user.login.LoginManager"/>
-
     </data>
-
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff9f5">
-
-
+        android:background="@color/login_background">
 
         <LinearLayout
             android:id="@+id/inputs"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="@dimen/layout_content_padding">
 
             <ImageView
                 android:layout_width="@dimen/user_registration_imview_width"
                 android:layout_height="@dimen/user_registration_imview_heigth"
+                android:layout_marginTop="@dimen/dimen_30dp"
                 android:layout_gravity="center"
+                android:background="@color/login_background"
                 android:src="@mipmap/ic_launcher"
                 />
 
-
-                <TextView
-                android:id="@+id/user_registration_title_text"
+            <TextView
+                android:id="@+id/application_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:layout_marginBottom="@dimen/dimen_14dp"
-                style="@style/user_registration_title_text"
-                android:text="@string/user_registration_title_text" />
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@color/color_line"/>
-
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="@dimen/dimen_50dp"
+                style="@style/login_textView"
+                android:text="@string/login_app_name" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_user_name"
@@ -64,12 +55,14 @@
                 <EditText
                     android:id="@+id/txtUserName"
                     android:layout_width="match_parent"
-                    android:hint="@string/user_name"
+                    android:hint="@string/login_user_name"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_5dp"
                     android:text="@={user.userName}"
                     style="@style/edit_text_style"
-                    android:background="@drawable/edit_text_border"/>
+                    android:background="@drawable/edit_text_border">
+                <requestFocus />
+            </EditText>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -83,53 +76,73 @@
                 <EditText
                     android:id="@+id/txtPassword"
                     android:layout_width="match_parent"
-                    android:hint="@string/create_password"
+                    android:hint="@string/login_password"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_5dp"
                     android:inputType="textPassword"
                     android:text="@={user.password}"
                     style="@style/edit_text_style"
+                    android:imeOptions="actionDone"
+
                     android:background="@drawable/edit_text_border"/>
 
             </android.support.design.widget.TextInputLayout>
-            <View
-                android:layout_marginTop="@dimen/dimen_14dp"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_1dp"
-                android:layout_above="@+id/btnContinue"
-                android:background="@color/button_dark_back"/>
 
-            <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/user_forgotten_pass_link_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:textColor="@drawable/button_text_color"
-                android:background="@drawable/button_shape"
-                android:onClick="@{(view) -> presenter.login(user)}"
-                android:text="@string/login_text"/>
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dimen_30dp"
+                android:layout_marginBottom="@dimen/dimen_14dp"
+                android:onClick="@{(view) -> presenter.initPasswordReset()}"
+                style="@style/user_login_links"
+                android:text="@string/user_forgotten_pass_link_text" />
 
             <TextView
                 android:id="@+id/user_registration_link_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimen_20dp"
                 android:layout_marginBottom="@dimen/dimen_14dp"
-                style="@style/user_registration_title_text"
+                style="@style/user_login_links"
+                android:onClick="@{(view) -> presenter.initNewUserCreation()}"
                 android:text="@string/user_registration_link_text" />
-            <TextView
-                android:id="@+id/user_forgotten_pass_link_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:layout_marginBottom="@dimen/dimen_14dp"
-                style="@style/user_registration_title_text"
-                android:text="@string/user_forgotten_pass_link_text" />
+
+
 
         </LinearLayout>
 
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/black_overlay"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    style="?metaButtonBarButtonStyle"
+                    android:textColor="@drawable/button_text_color"
+                    android:background="@drawable/button_shape"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{(view) -> presenter.login(user)}"
+                    android:text="@string/login_text" />
+
+            </LinearLayout>
+        </FrameLayout>
 
 
     </RelativeLayout>

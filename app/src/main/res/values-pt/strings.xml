@@ -27,9 +27,13 @@
     <string name="select_posto">Select the posto</string>
     <string name="select_bairro">Select the neibourghood</string>
     <string name="localizacao_settings_sync_in_progress">Location settings sync in progress, please wait...</string>
-    <string name="login_text">Entrar</string>
-    <string name="user_registration_link_text">Criar Conta</string>
+    <string name="login_text">Iniciar sessão</string>
+    <string name="user_registration_link_text">É a primeira vez que usa o MobiCare? Criar Conta</string>
     <string name="user_forgotten_pass_link_text">Esqueceu a senha?</string>
     <string name="activity_login_alert_ok">OK</string>
     <string name="network_not_available">Internet signal not availabel, please check your device Internet settings and try again.</string>
+    <string name="login_user_name">Utilizador</string>
+    <string name="login_password">Palavra passe</string>
+    <string name="user_password_invalid">Os dados de utilizador ou palavra passe são inválidos.</string>
+    <string name="login_app_name">mobiCare</string>
 </resources>

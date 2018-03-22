@@ -75,6 +75,19 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <color name="text_color">#a54101</color>
+    <style name="user_login_links">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <!-- LOGIN STYLE -->
+    <style name="login_textView" parent="AppTheme">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <color name="text_color">#098046</color>
     <dimen name="dimen_15dp">15dp</dimen>
 </resources>

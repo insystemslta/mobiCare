@@ -32,19 +32,18 @@
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
 
-
-        </activity>
-        <activity
-            android:name=".activities.user.registration.UserRegistrationActivity"
-            android:label="@string/regist_user"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".activities.farmacia.FarmaciaSearchActivity"></activity>
+        <activity
+            android:name=".activities.user.registration.UserRegistrationActivity"
+            android:label="@string/regist_user"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".activities.farmacia.FarmaciaSearchActivity" />
     </application>
 
 </manifest>

@@ -10,9 +10,9 @@ import java.sql.SQLException;
 
 public interface UserDao extends Dao<User, Integer>{
 
-    boolean authenticate(User user) throws SQLException;
+    boolean isAuthentic(User user) throws SQLException;
 
-    public User authenticateUser(User user) throws SQLException;
+    User getByCredencials(User user) throws SQLException;
 
-    public void deleteAllUser() throws SQLException;
+    void deleteAllUser() throws SQLException;
 }

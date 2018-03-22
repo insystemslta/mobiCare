@@ -16,7 +16,7 @@ import java.io.IOException;
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.base.json.JsonParseble;
-import mz.co.insystems.mobicare.common.SimpleAdapter;
+import mz.co.insystems.mobicare.common.LocalizacaoObject;
 import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
 
 /**
@@ -24,7 +24,7 @@ import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Bairro.TABLE_NAME_BAIRRO, daoClass = BairroDaoImpl.class)
-public class Bairro extends BaseVO implements SimpleAdapter, JsonParseble<Bairro> {
+public class Bairro extends BaseVO implements LocalizacaoObject, JsonParseble<Bairro> {
 
     public static final String TABLE_NAME_BAIRRO                    = "bairro";
     public static final String COLUMN_BAIRRO_ID 			        = "id";

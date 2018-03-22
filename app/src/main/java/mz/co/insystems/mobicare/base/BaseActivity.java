@@ -1,6 +1,7 @@
 package mz.co.insystems.mobicare.base;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -43,6 +44,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected MobicareSyncService service;
 
+    private ProgressDialog syncProgress;
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
@@ -59,6 +62,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public void showLoading(Context context, String title, String msg) {
+        syncProgress = ProgressDialog.show(context, title, msg);
+        syncProgress.setCancelable(true);
+    }
+
+    public void hideLoading() {
+        if (syncProgress != null && syncProgress.isShowing()) syncProgress.dismiss();
     }
 
     public void setCurrentUser(User currentUser) {
@@ -180,5 +192,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return bairroDao;
+    }
+
+    public MobicareSyncService getService() {
+        return service;
     }
 }

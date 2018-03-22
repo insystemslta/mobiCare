@@ -186,5 +186,9 @@ public class User extends BaseVO implements JsonParseble <User>{
     public User fromJsonObject(JSONObject response) throws IOException {
         return objectMapper.readValue(String.valueOf(response), User.class);
     }
+
+    public boolean isFarmacia() {
+        return this.farmacia != null && this.pessoa == null;
+    }
 }
 

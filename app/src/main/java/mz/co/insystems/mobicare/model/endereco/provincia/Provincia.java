@@ -15,13 +15,13 @@ import java.io.IOException;
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.base.json.JsonParseble;
-import mz.co.insystems.mobicare.common.SimpleAdapter;
+import mz.co.insystems.mobicare.common.LocalizacaoObject;
 
 /**
  * Created by voloide on 9/15/16.
  */
 @DatabaseTable(tableName = Provincia.TABLE_NAME_PROVINCIA, daoClass = ProvinciaDaoImpl.class)
-public class Provincia extends BaseVO implements SimpleAdapter, JsonParseble<Provincia>{
+public class Provincia extends BaseVO implements LocalizacaoObject, JsonParseble<Provincia>{
 
     public static final String TABLE_NAME_PROVINCIA                 = "provincia";
     public static final String COLUMN_PROVINCIA_ID 			        = "id";

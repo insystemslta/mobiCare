@@ -18,13 +18,13 @@ import mz.co.insystems.mobicare.R;
  * Created by Voloide Tamele on 11/26/2017.
  */
 
-public class SimpleSpinnerAdapter extends ArrayAdapter {
+public class LocalizacaoSpinnerAdapter extends ArrayAdapter {
 
     private Context context;
     private List dataList;
     LayoutInflater inflater;
 
-    public SimpleSpinnerAdapter(@NonNull Activity activity, int textViewResourceId, List dataList) {
+    public LocalizacaoSpinnerAdapter(@NonNull Activity activity, int textViewResourceId, List dataList) {
         super(activity, textViewResourceId, dataList);
         this.context = activity.getApplicationContext();
         this.dataList = dataList;
@@ -39,7 +39,7 @@ public class SimpleSpinnerAdapter extends ArrayAdapter {
             convertView = inflater.inflate(R.layout.simple_spinner_item, parent, false);
         }
         TextView label = convertView.findViewById(R.id.label);
-        label.setText(((SimpleAdapter)dataList.get(position)).getDescricao());
+        label.setText(((LocalizacaoObject)dataList.get(position)).getDescricao());
         return convertView;
     }
 
@@ -51,7 +51,7 @@ public class SimpleSpinnerAdapter extends ArrayAdapter {
         }
 
         TextView label = convertView.findViewById(R.id.label);
-        label.setText(((SimpleAdapter)dataList.get(position)).getDescricao());
+        label.setText(((LocalizacaoObject)dataList.get(position)).getDescricao());
         return convertView;
     }
 }

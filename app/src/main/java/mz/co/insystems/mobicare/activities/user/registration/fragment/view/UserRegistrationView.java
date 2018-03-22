@@ -1,4 +1,4 @@
-package mz.co.insystems.mobicare.activities.user.registration;
+package mz.co.insystems.mobicare.activities.user.registration.fragment.view;
 
 import mz.co.insystems.mobicare.common.FragmentChangeListener;
 
@@ -8,6 +8,5 @@ import mz.co.insystems.mobicare.common.FragmentChangeListener;
 
 public interface UserRegistrationView extends FragmentChangeListener {
 
-    void showLoading();
-    void hideLoading();
+
 }

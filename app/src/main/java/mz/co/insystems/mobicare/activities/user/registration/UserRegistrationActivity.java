@@ -1,6 +1,5 @@
 package mz.co.insystems.mobicare.activities.user.registration;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,15 +7,14 @@ import android.support.v4.app.FragmentTransaction;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.UserAccountFragment;
+import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.UserRegistrationFragmentEventHandler;
 import mz.co.insystems.mobicare.base.BaseActivity;
+import mz.co.insystems.mobicare.common.FragmentChangeListener;
 
-public class UserRegistrationActivity extends BaseActivity implements UserRegistrationView{
+public class UserRegistrationActivity extends BaseActivity implements UserRegistrationFragmentEventHandler, FragmentChangeListener {
 
-    private ProgressDialog syncProgress;
     private FragmentManager manager;
-    private UserRegistrationPresenterImpl presenter;
-
-
+    private UserRegistrationFragmentEventHandler presenter;
 
     public UserRegistrationActivity() {
         super();
@@ -29,8 +27,6 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
         setContentView(R.layout.activity_user_registration);
         addSimpleToolbar();
 
-        presenter = new UserRegistrationPresenterImpl(UserRegistrationActivity.this, getmUserDao());
-
         if (savedInstanceState == null){
             UserAccountFragment accountFragment = new UserAccountFragment();
 
@@ -38,18 +34,6 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
             transaction.add(R.id.root_container, accountFragment);
             transaction.commit();
         }
-    }
-
-    @Override
-    public void showLoading() {
-        syncProgress = ProgressDialog.show(UserRegistrationActivity.this, ""
-                , getString(R.string.localizacao_settings_sync_in_progress));
-        syncProgress.setCancelable(true);
-    }
-
-    @Override
-    public void hideLoading() {
-        syncProgress.dismiss();
     }
 
     @Override
@@ -71,13 +55,4 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
     protected void onDestroy() {
         super.onDestroy();
     }
-
-    public UserRegistrationPresenterImpl getPresenter() {
-        return presenter;
-    }
-
-    public void setPresenter(UserRegistrationPresenterImpl presenter) {
-        this.presenter = presenter;
-    }
-
 }

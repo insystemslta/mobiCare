@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import mz.co.insystems.mobicare.R;
 
@@ -112,5 +113,11 @@ public class Utilities {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean listHasElements(List list) {
+        if (list == null) return false;
+        if (list.size() <= 0) return false;
+        return list.isEmpty();
     }
 }

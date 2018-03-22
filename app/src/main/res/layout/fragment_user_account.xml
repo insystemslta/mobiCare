@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.user.registration.fragment.UserAccountFragment">
 
-    <data>
+    <data >
         <variable
             name="user"
             type="mz.co.insystems.mobicare.model.user.User"/>
         <variable
             name="presenter"
-            type="mz.co.insystems.mobicare.activities.user.registration.UserRegistrationPresenterImpl"/>
+            type="mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.UserAccountFragmentEventHandlerImpl"/>
 
     </data>
 
@@ -148,7 +148,7 @@
                 android:layout_alignParentBottom="true"
                 android:textColor="@drawable/button_text_color"
                 android:background="@drawable/button_shape"
-                android:onClick="@{(view) -> presenter.continueRegistration(user)}"
+                android:onClick="@{() -> presenter.nextFragment(user)}"
                 android:text="@string/continue_text"/>
 
         </RelativeLayout>

@@ -31,4 +31,5 @@
     <string name="user_registration_link_text">Criar Conta</string>
     <string name="user_forgotten_pass_link_text">Esqueceu a senha?</string>
     <string name="activity_login_alert_ok">OK</string>
+    <string name="network_not_available">Internet signal not availabel, please check your device Internet settings and try again.</string>
 </resources>

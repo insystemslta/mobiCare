@@ -15,14 +15,14 @@ import java.io.IOException;
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.base.json.JsonParseble;
-import mz.co.insystems.mobicare.common.SimpleAdapter;
+import mz.co.insystems.mobicare.common.LocalizacaoObject;
 import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 
 /**
  * Created by voloide on 9/15/16.
  */
 @DatabaseTable(tableName = Distrito.TABLE_NAME_DISTRITO, daoClass = DistritoDaoImpl.class)
-public class Distrito extends BaseVO implements SimpleAdapter, JsonParseble<Distrito> {
+public class Distrito extends BaseVO implements LocalizacaoObject, JsonParseble<Distrito> {
 
     public static final String TABLE_NAME_DISTRITO                       = "distrito";
     public static final String COLUMN_DISTRITO_ID 			             = "id";

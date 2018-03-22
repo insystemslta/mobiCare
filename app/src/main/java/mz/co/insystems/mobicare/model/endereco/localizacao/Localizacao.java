@@ -1,5 +1,7 @@
 package mz.co.insystems.mobicare.model.endereco.localizacao;
 
+import android.databinding.Bindable;
+
 import com.android.volley.Request;
 
 import org.json.JSONArray;
@@ -11,8 +13,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.co.insystems.mobicare.BR;
+import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
 import mz.co.insystems.mobicare.base.BaseActivity;
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.common.LocalizacaoObject;
 import mz.co.insystems.mobicare.model.endereco.bairro.Bairro;
 import mz.co.insystems.mobicare.model.endereco.distrito.Distrito;
 import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
@@ -20,6 +26,7 @@ import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdminist
 import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
+import mz.co.insystems.mobicare.util.Utilities;
 
 /**
  * Created by Voloide Tamele on 11/27/2017.
@@ -30,152 +37,240 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     private Provincia selectedProvincia;
     private Distrito selectedDistrito;
     private Municipio selectedMunicipio;
+    private PostoAdministrativo selectedPosto;
+    private Bairro selectedBairro;
 
     private boolean isRural;
 
-    private MobicareSyncService service;
-    private List<Provincia> provinciaList;
-    private List<Distrito> distritoList;
-    private List<Municipio> municipioList;
-    private List<Bairro> bairroList;
-    private List<PostoAdministrativo> postoList;
+    private List<Provincia> provinciaList = new ArrayList<>();
+    private List<Distrito> distritoList = new ArrayList<>();
+    private List<Municipio> municipioList = new ArrayList<>();
+    private List<Bairro> bairroList = new ArrayList<>();
+    private List<PostoAdministrativo> postoList = new ArrayList<>();
 
     private BaseActivity currentActivity;
     private List<String> syncErrorList;
 
-    public Localizacao(BaseActivity currentActivity, final boolean isRural) {
+    private PersonalDataFragmentView fragmentView;
+
+    public Localizacao(BaseActivity currentActivity, PersonalDataFragmentView fragmentView, final boolean isRural) {
         this.currentActivity = currentActivity;
         this.isRural = isRural;
         this.syncErrorList = new ArrayList<>();
+        this.fragmentView = fragmentView;
 
         try {
             this.provinciaList = currentActivity.getProvinciaDao().queryForAll();
             if (provinciaList == null || provinciaList.size() <= 0) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        syncProvincias();
-                        if (isRural){
-                            if (noSyncError()) syncDistritos();
-                            if (noSyncError()) syncPostos();
-                        }else {
-                            if (noSyncError()) syncMunicipios();
-                            if (noSyncError()) syncBairros();
-                        }
-                        if (!noSyncError()) showSyncError();
-                    }
-                }).start();
+                doLocalizacaoSync(currentActivity, isRural);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        fragmentView.reloadAllAdapters(this);
     }
 
-    private void showSyncError() {
-        // TO-DO
+    private void doLocalizacaoSync(BaseActivity currentActivity, final boolean isRural) {
+        if (Utilities.isNetworkAvailable(this.currentActivity.getApplicationContext())) {
+            this.currentActivity.showLoading(this.currentActivity.getApplicationContext(), null, this.currentActivity.getString(R.string.localizacao_settings_sync_in_progress));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    syncProvincias();
+                    if (isRural) {
+                        if (noSyncError()) syncDistritos();
+                        if (noSyncError()) syncPostos();
+                    } else {
+                        if (noSyncError()) syncMunicipios();
+                        if (noSyncError()) syncBairros();
+                    }
+                }
+            }).start();
+
+        } else {
+            Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), this.currentActivity.getString(R.string.network_not_available));
+        }
     }
 
     private boolean noSyncError() {
         return syncErrorList == null || syncErrorList.isEmpty();
     }
 
-    public Provincia getSelectedProvincia() {
+    @Bindable
+    public LocalizacaoObject getSelectedProvincia() {
         return selectedProvincia;
     }
 
-    public void setSelectedProvincia(Provincia selectedProvincia) throws SQLException {
-        this.selectedProvincia = selectedProvincia;
-        if (isRural){
-            distritoList = currentActivity.getDistritoDao().queryBuilder().where().eq(Distrito.COLUMN_DISTRITO_PROVINCIA_ID, selectedProvincia.getId()).query();
-        }else {
-            municipioList = currentActivity.getMunicipioDao().queryBuilder().where().eq(Municipio.COLUMN_MUNICIPIO_PROVINCIA_ID, selectedProvincia.getId()).query();
+    public void setSelectedProvincia(LocalizacaoObject selectedProvincia) {
+        this.selectedProvincia = (Provincia) selectedProvincia;
+        try {
+            if (this.isRural){
+                distritoList = currentActivity.getDistritoDao().queryBuilder().where().eq(Distrito.COLUMN_DISTRITO_PROVINCIA_ID, selectedProvincia.getId()).query();
+            }else {
+                municipioList = currentActivity.getMunicipioDao().queryBuilder().where().eq(Municipio.COLUMN_MUNICIPIO_PROVINCIA_ID, selectedProvincia.getId()).query();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        resetBairroData();
-        resetPostoData();
-
+        fragmentView.loadLevelTwoAdapters(this);
+        resetLevelThreeData();
+        fragmentView.loadLevelThreeAdapters(this);
+        notifyPropertyChanged(BR.selectedProvincia);
     }
 
-    private void resetPostoData() {
-        postoList = null;
+    public void resetLevelThreeData() {
+        postoList = new ArrayList<>();
+        bairroList = new ArrayList<>();
     }
 
-    private void resetBairroData() {
-        bairroList = null;
+    public void resetLevelTwoData() {
+        distritoList = new ArrayList<>();
+        municipioList = new ArrayList<>();
     }
 
+    @Bindable
     public List<Provincia> getProvinciaList() {
         return provinciaList;
     }
 
     public void setProvinciaList(List<Provincia> provinciaList) {
         this.provinciaList = provinciaList;
+        notifyPropertyChanged(BR.provinciaList);
     }
 
+    @Bindable
     public boolean isRural() {
         return isRural;
     }
 
     public void setRural(boolean rural) {
         isRural = rural;
+        notifyPropertyChanged(BR.rural);
     }
 
-    public Distrito getSelectedDistrito() {
+    @Bindable
+    public LocalizacaoObject getSelectedDistrito() {
         return selectedDistrito;
     }
 
-    public void setSelectedDistrito(Distrito selectedDistrito) throws SQLException {
-        postoList = currentActivity.getPostoDao().queryBuilder().where().eq(PostoAdministrativo.COLUMN_POSTO_DISTRITO_ID, selectedDistrito.getId()).query();
-        this.selectedDistrito = selectedDistrito;
+    public void setSelectedDistrito(LocalizacaoObject selectedDistrito) {
+        if (selectedDistrito instanceof Distrito) {
+            this.selectedDistrito = (Distrito) selectedDistrito;
+            resetLevelThreeData();
+            try {
+                postoList = currentActivity.getPostoDao().queryBuilder().where().eq(PostoAdministrativo.COLUMN_POSTO_DISTRITO_ID, this.selectedDistrito.getId()).query();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            fragmentView.loadLevelThreeAdapters(this);
+            notifyPropertyChanged(BR.selectedDistrito);
+        }
     }
 
-    public Municipio getSelectedMunicipio() {
+    @Bindable
+    public LocalizacaoObject getSelectedMunicipio() {
         return selectedMunicipio;
     }
 
-    public void setSelectedMunicipio(Municipio selectedMunicipio) throws SQLException {
-        bairroList = currentActivity.getBairroDao().queryBuilder().where().eq(Bairro.COLUMN_BAIRRO_MUNICIPIO, selectedMunicipio.getId()).query();
-        this.selectedMunicipio = selectedMunicipio;
+    @Bindable
+    public LocalizacaoObject getSelectedPosto() {
+        return selectedPosto;
     }
 
+    public void setSelectedPosto(LocalizacaoObject selectedPosto) {
+        this.selectedPosto = (PostoAdministrativo) selectedPosto;
+        if (fragmentView.getCurrentUser().isFarmacia()){
+            fragmentView.getCurrentUser().getFarmacia().getEndereco().setPostoAdministrativo(this.selectedPosto);
+            fragmentView.getCurrentUser().getFarmacia().getEndereco().setBairro(null);
+        }else {
+            fragmentView.getCurrentUser().getPessoa().getEndereco().setPostoAdministrativo(this.selectedPosto);
+            fragmentView.getCurrentUser().getFarmacia().getEndereco().setBairro(null);
+        }
+        notifyPropertyChanged(BR.selectedPosto);
+    }
+
+    @Bindable
+    public LocalizacaoObject getSelectedBairro() {
+        return selectedBairro;
+    }
+
+    public void setSelectedBairro(LocalizacaoObject selectedBairro) {
+        if (selectedBairro instanceof Bairro) {
+            this.selectedBairro = (Bairro) selectedBairro;
+            if (fragmentView.getCurrentUser().isFarmacia()){
+                fragmentView.getCurrentUser().getFarmacia().getEndereco().setBairro(this.selectedBairro);
+                fragmentView.getCurrentUser().getFarmacia().getEndereco().setPostoAdministrativo(null);
+            }else {
+                fragmentView.getCurrentUser().getPessoa().getEndereco().setBairro(this.selectedBairro);
+                fragmentView.getCurrentUser().getFarmacia().getEndereco().setPostoAdministrativo(null);
+            }
+            notifyPropertyChanged(BR.selectedBairro);
+        }
+    }
+
+    public void setSelectedMunicipio(LocalizacaoObject selectedMunicipio){
+        if (selectedMunicipio instanceof Municipio) {
+            this.selectedMunicipio = (Municipio) selectedMunicipio;
+            resetLevelThreeData();
+            try {
+                bairroList = currentActivity.getBairroDao().queryBuilder().where().eq(Bairro.COLUMN_BAIRRO_MUNICIPIO, this.selectedMunicipio.getId()).query();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            fragmentView.loadLevelThreeAdapters(this);
+            notifyPropertyChanged(BR.selectedMunicipio);
+        }
+    }
+
+    @Bindable
     public List<Distrito> getDistritoList() {
         return distritoList;
     }
 
     public void setDistritoList(List<Distrito> distritoList) {
         this.distritoList = distritoList;
+        notifyPropertyChanged(BR.distritoList);
     }
 
+    @Bindable
     public List<Municipio> getMunicipioList() {
         return municipioList;
     }
 
     public void setMunicipioList(List<Municipio> municipioList) {
         this.municipioList = municipioList;
+        notifyPropertyChanged(BR.municipioList);
     }
 
+    @Bindable
     public List<Bairro> getBairroList() {
         return bairroList;
     }
 
     public void setBairroList(List<Bairro> bairroList) {
         this.bairroList = bairroList;
+        notifyPropertyChanged(BR.bairroList);
     }
 
+    @Bindable
     public List<PostoAdministrativo> getPostoList() {
         return postoList;
     }
 
     public void setPostoList(List<PostoAdministrativo> postoList) {
         this.postoList = postoList;
+        notifyPropertyChanged(BR.postoList);
     }
 
     @Override
     public void syncProvincias() {
-        service.makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Provincia.TABLE_NAME_PROVINCIA), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Provincia.TABLE_NAME_PROVINCIA), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
-                //onSyncError(Provincia.TABLE_NAME_PROVINCIA, message);
+                onSyncError(Provincia.TABLE_NAME_PROVINCIA, message);
             }
 
             @Override
@@ -201,12 +296,16 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
         });
     }
 
+    private MobicareSyncService getService() {
+        return currentActivity.getService();
+    }
+
     @Override
     public void syncDistritos() {
-        service.makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
-                //onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
+                onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
             }
 
             @Override
@@ -234,10 +333,10 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
     @Override
     public void syncPostos() {
-        service.makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(PostoAdministrativo.TABLE_NAME_POSTO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(PostoAdministrativo.TABLE_NAME_POSTO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
-                //onSyncError(PostoAdministrativo.TABLE_NAME_POSTO, message);
+                onSyncError(PostoAdministrativo.TABLE_NAME_POSTO, message);
             }
 
             @Override
@@ -259,16 +358,17 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                         e.printStackTrace();
                     }
                 }
+                currentActivity.hideLoading();
             }
         });
     }
 
     @Override
     public void syncMunicipios() {
-        service.makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Municipio.TABLE_NAME_MUNICIPIO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Municipio.TABLE_NAME_MUNICIPIO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
-                //onSyncError(Municipio.TABLE_NAME_MUNICIPIO, message);
+                onSyncError(Municipio.TABLE_NAME_MUNICIPIO, message);
             }
 
             @Override
@@ -296,10 +396,10 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
     @Override
     public void syncBairros() {
-        service.makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
-                //onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
+                onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
             }
 
             @Override
@@ -321,7 +421,16 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                         e.printStackTrace();
                     }
                 }
+                currentActivity.hideLoading();
             }
         });
+    }
+
+    private void onSyncError(String tableNameDistrito, String message) {
+        currentActivity.hideLoading();
+        if (this.syncErrorList == null) this.syncErrorList = new ArrayList<>();
+        this.syncErrorList.add(message);
+
+        Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), syncErrorList.toString());
     }
 }

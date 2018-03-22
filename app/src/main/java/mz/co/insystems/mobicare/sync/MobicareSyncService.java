@@ -43,7 +43,7 @@ public class MobicareSyncService {
 
     public static final String URI_AUTHORITY_TEST = "192.168.4.197";
 
-    public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getFullCredentials";
+    public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getByCredentials";
     public static final String SERVICE_ENTITY_USER = User.TABLE_NAME;
 
     public static final String SERVICE_CREATE = "create";
@@ -160,6 +160,16 @@ public class MobicareSyncService {
                 } catch (JSONException je) {
                     return Response.error(new ParseError(je));
                 }
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                if (user.getId() <= 0) {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put(User.COLUMN_USER_NAME, user.getUserName());
+                    params.put(User.COLUMN_PASSWORD, user.getPassword());
+                    return params;
+                }else return super.getParams();
             }
 
             @Override

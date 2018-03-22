@@ -1,26 +1,34 @@
 package mz.co.insystems.mobicare.activities.user.registration.fragment;
 
+import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 
+import com.android.volley.Request;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
-import mz.co.insystems.mobicare.common.SimpleSpinnerAdapter;
-import mz.co.insystems.mobicare.model.endereco.bairro.Bairro;
-import mz.co.insystems.mobicare.model.endereco.distrito.Distrito;
+import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.PersonalDataFragmentEventHandlerImpl;
+import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
+import mz.co.insystems.mobicare.common.LocalizacaoSpinnerAdapter;
+import mz.co.insystems.mobicare.databinding.PersonalDataFragmentDataBinding;
 import mz.co.insystems.mobicare.model.endereco.localizacao.Localizacao;
-import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
-import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativo;
-import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
+import mz.co.insystems.mobicare.model.user.User;
+import mz.co.insystems.mobicare.sync.MobicareSyncService;
+import mz.co.insystems.mobicare.sync.VolleyResponseListener;
+import mz.co.insystems.mobicare.util.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,174 +36,78 @@ import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class PersonalDataFragment extends Fragment {
-    private Spinner provSpinner;
-    private Spinner distSpinner;
-    private Spinner munSpinner;
-    private Spinner postoSpinner;
-    private Spinner bairroSpinner;
-    private RadioGroup radioGroup;
+public class PersonalDataFragment extends Fragment implements PersonalDataFragmentView {
 
+    private PersonalDataFragmentDataBinding binding;
     private Localizacao localizacao;
 
     public PersonalDataFragment() {
     }
 
-    private boolean isRural(){
-        return radioGroup.getCheckedRadioButtonId() == R.id.rdRural;
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        PersonalDataFragmentDataBinding binding = DataBindingUtil.inflate(inflater,
-//                R.layout.fragment_personal_data, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_personal_data, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_personal_data, container, false);
+        initMunicipalLocalizacao();
 
-        provSpinner = view.findViewById(R.id.provincia);
-        distSpinner = view.findViewById(R.id.distrito);
-        munSpinner = view.findViewById(R.id.municipio);
-        postoSpinner = view.findViewById(R.id.posto);
-        bairroSpinner = view.findViewById(R.id.bairro);
-
-        radioGroup = view.findViewById(R.id.rdgZona);
-
-        localizacao = new Localizacao(getMyActivity(), isRural());
-        loadProvinciaSpinner(localizacao.getProvinciaList());
-
-        loadSpinnerSchematics();
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                reloadLocalizacao();
-                loadSpinnerSchematics();
-            }
-        });
-
-        bairroSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getMyActivity().getCurrentUser().getPessoa().getEndereco().setBairro((Bairro) parent.getItemAtPosition(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        postoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getMyActivity().getCurrentUser().getPessoa().getEndereco().setPostoAdministrativo((PostoAdministrativo) parent.getItemAtPosition(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        provSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    localizacao.setSelectedProvincia((Provincia) parent.getItemAtPosition(position));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                if (isRural()){
-                    loadDistritosSpinner(localizacao.getDistritoList());
-                }else {
-                    loadMunicipalSpinner(localizacao.getMunicipioList());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        distSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    localizacao.setSelectedDistrito((Distrito) parent.getItemAtPosition(position));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                loadPostoSpinner(localizacao.getPostoList());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        munSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    localizacao.setSelectedMunicipio((Municipio) parent.getItemAtPosition(position));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                loadBairroSpinner(localizacao.getBairroList());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        
-        // Inflate the layout for this fragment
-        return view;
+        PersonalDataFragmentEventHandlerImpl presenter = new PersonalDataFragmentEventHandlerImpl(PersonalDataFragment.this, getMyActivity().getmUserDao());
+        binding.setUser(getMyActivity().getCurrentUser());
+        binding.setPresenter(presenter);
+        binding.setLocalizacao(localizacao);
+        return binding.getRoot();
     }
 
-    private void loadSpinnerSchematics() {
-        if (isRural()){
-            munSpinner.setVisibility(View.GONE);
-            bairroSpinner.setVisibility(View.GONE);
-            distSpinner.setVisibility(View.VISIBLE);
-            postoSpinner.setVisibility(View.VISIBLE);
+    @Override
+    public void loadLevelOneAdapters(Localizacao localizacao) {
+        LocalizacaoSpinnerAdapter provinciaAdapter = new LocalizacaoSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, localizacao.getProvinciaList());
+        binding.setProvinciaAdapter(provinciaAdapter);
+    }
+
+    @Override
+    public void loadLevelTwoAdapters(Localizacao localizacao) {
+        LocalizacaoSpinnerAdapter distritoAdapter = new LocalizacaoSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, localizacao.getDistritoList());
+        LocalizacaoSpinnerAdapter municipioAdapter = new LocalizacaoSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, localizacao.getMunicipioList());
+        binding.setDistritoAdapter(distritoAdapter);
+        binding.setMunicipioAdapter(municipioAdapter);
+    }
+
+    @Override
+    public void loadLevelThreeAdapters(Localizacao localizacao) {
+        LocalizacaoSpinnerAdapter postoAdapter = new LocalizacaoSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, localizacao.getPostoList());
+        LocalizacaoSpinnerAdapter bairroAdapter = new LocalizacaoSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, localizacao.getBairroList());
+        binding.setPostoAdapter(postoAdapter);
+        binding.setBairroAdapter(bairroAdapter);
+    }
+
+    @Override
+    public void reloadAllAdapters(Localizacao localizacao) {
+        loadLevelOneAdapters(localizacao);
+        loadLevelTwoAdapters(localizacao);
+        loadLevelThreeAdapters(localizacao);
+    }
+
+    @Override
+    public void initMunicipalLocalizacao() {
+        if (this.localizacao == null){
+            this.localizacao = new Localizacao(getMyActivity(), PersonalDataFragment.this, false);
         }else {
-            munSpinner.setVisibility(View.VISIBLE);
-            bairroSpinner.setVisibility(View.VISIBLE);
-            distSpinner.setVisibility(View.GONE);
-            postoSpinner.setVisibility(View.GONE);
+            this.localizacao.setRural(false);
+            this.localizacao.resetLevelTwoData();
+            this.localizacao.resetLevelThreeData();
+            reloadAllAdapters(this.localizacao);
         }
     }
 
-    private void reloadLocalizacao() {
-        localizacao = new Localizacao(getMyActivity(), isRural());
-    }
-
-    private void loadBairroSpinner(List<Bairro> bairroList) {
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, bairroList);
-        bairroSpinner.setAdapter(adapter);
-    }
-
-    private void loadPostoSpinner(List<PostoAdministrativo> postoList) {
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, postoList);
-        postoSpinner.setAdapter(adapter);
-    }
-
-    private void loadDistritosSpinner(List<Distrito> distritoList) {
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, distritoList);
-        distSpinner.setAdapter(adapter);
-    }
-
-    private void loadMunicipalSpinner(List<Municipio> municipioList) {
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, municipioList);
-        munSpinner.setAdapter(adapter);
-    }
-
-    private void loadProvinciaSpinner(List<Provincia> provinciaList) {
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(getMyActivity(), R.layout.simple_spinner_item, provinciaList);
-        provSpinner.setAdapter(adapter);
+    @Override
+    public void initRuralLocalizacao() {
+        if (this.localizacao == null){
+            this.localizacao = new Localizacao(getMyActivity(), PersonalDataFragment.this, true);
+        }else {
+            this.localizacao.setRural(true);
+            this.localizacao.resetLevelTwoData();
+            this.localizacao.resetLevelThreeData();
+            reloadAllAdapters(this.localizacao);
+        }
     }
 
     private UserRegistrationActivity getMyActivity() {
@@ -205,5 +117,107 @@ public class PersonalDataFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public Localizacao getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(Localizacao localizacao) {
+        this.localizacao = localizacao;
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return getMyActivity().getCurrentUser();
+    }
+
+    @Override
+    public void doSave(User user) {
+        showLoading();
+        Uri.Builder uri =  getMyActivity().getService().initServiceUri();
+        uri.appendPath(User.TABLE_NAME);
+        uri.appendPath(MobicareSyncService.SERVICE_CREATE);
+        final String url = uri.build().toString();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getMyActivity().getService().makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().toJsonObject(), getCurrentUser(), new VolleyResponseListener() {
+                        @Override
+                        public void onError(String message) {
+                            hideLoading();
+                        }
+
+                        @Override
+                        public void onResponse(JSONObject response, int myStatusCode) {
+                            if (myStatusCode == Constants.HTTP_CREATED){
+
+                                Uri.Builder uri =  getMyActivity().getService().initServiceUri();
+                                uri.appendPath(User.TABLE_NAME);
+                                uri.appendPath(MobicareSyncService.URL_SERVICE_USER_GET_BY_CREDENTIALS);
+                                final String url = uri.build().toString();
+
+                                getMyActivity().getService().makeJsonObjectRequest(Request.Method.POST, url, null, getCurrentUser(), new VolleyResponseListener() {
+                                    @Override
+                                    public void onError(String message) {
+                                        hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onResponse(JSONObject response, int myStatusCode) {
+                                        User user = new User();
+                                        try {
+                                            user = user.fromJsonObject(response);
+                                            getMyActivity().getmUserDao().createIfNotExists(user);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
+                                        hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onResponse(JSONArray response, int myStatusCode) {}
+                                });
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onResponse(JSONArray response, int myStatusCode) {}
+                    });
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        try {
+            getMyActivity().getmUserDao().createIfNotExists(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onTipoLocalizacaoClick(String tipoLocalizacao) {
+        if (tipoLocalizacao.equalsIgnoreCase(getString(R.string.rural))){
+            getLocalizacao().setRural(true);
+        }else getLocalizacao().setRural(false);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
     }
 }

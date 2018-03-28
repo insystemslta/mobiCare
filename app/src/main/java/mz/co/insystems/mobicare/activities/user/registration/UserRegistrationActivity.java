@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.UserAccountFragment;
@@ -25,6 +26,12 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+
         addSimpleToolbar();
 
         if (savedInstanceState == null){

@@ -33,7 +33,7 @@
     <string name="activity_login_alert_ok">OK</string>
     <string name="network_not_available">Internet signal not availabel, please check your device Internet settings and try again.</string>
     <string name="login_user_name">Utilizador</string>
-    <string name="login_password">Palavra passe</string>
+    <string name="login_password">Palavra-passe</string>
     <string name="user_password_invalid">Os dados de utilizador ou palavra passe são inválidos.</string>
     <string name="login_app_name">mobiCare</string>
 </resources>

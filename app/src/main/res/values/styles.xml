@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
@@ -46,7 +48,8 @@
 
     <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/hint_text_appearence</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">8sp</item>
+        <item name="android:typeface">sans</item>
     </style>
 
     <style name="edit_text_style">

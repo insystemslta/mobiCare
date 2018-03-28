@@ -6,7 +6,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="color_line">#c0c0c0</color>
-    <color name="button_light_back">#caf4e0</color>
+    <color name="button_light_back">#1eb56c</color>
     <color name="button_dark_back">#068d4b</color>
     <color name="hint_text_appearence">#a79991</color>
     <color name="spinner_drop_down_color">#fef7f3</color>

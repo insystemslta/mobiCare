@@ -12,9 +12,16 @@ import java.io.Serializable;
 public class BaseVO extends BaseObservable implements Serializable {
 
 
+    private  boolean keybordOpen;
+
     public BaseVO() {
     }
 
+    public boolean isKeybordOpen() {
+        return keybordOpen;
+    }
 
-
+    public void setKeybordOpen(boolean keybordOpen) {
+        this.keybordOpen = keybordOpen;
+    }
 }

@@ -7,6 +7,7 @@ import mz.co.insystems.mobicare.model.user.User;
  */
 
 public class LoginManager {
+
     private LoginActions loginActions;
 
     public LoginManager(LoginActions loginActions) {
@@ -15,6 +16,10 @@ public class LoginManager {
 
     public void login(User user){
         loginActions.doLogin(user);
+    }
+
+    public int getMarginDimension(){
+        return loginActions.getMarginDimension();
     }
 
     public void initNewUserCreation(){

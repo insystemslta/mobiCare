@@ -9,6 +9,10 @@
             type="mz.co.insystems.mobicare.model.user.User"/>
 
         <variable
+            name="loginActivity"
+            type="mz.co.insystems.mobicare.activities.user.login.LoginActivity"/>
+
+        <variable
             name="presenter"
             type="mz.co.insystems.mobicare.activities.user.login.LoginManager"/>
     </data>
@@ -18,107 +22,104 @@
         android:layout_height="match_parent"
         android:background="@color/login_background">
 
-        <LinearLayout
-            android:id="@+id/inputs"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/layout_content_padding">
-
-            <ImageView
-                android:layout_width="@dimen/user_registration_imview_width"
-                android:layout_height="@dimen/user_registration_imview_heigth"
-                android:layout_marginTop="@dimen/dimen_30dp"
-                android:layout_gravity="center"
-                android:background="@color/login_background"
-                android:src="@mipmap/ic_launcher"
-                />
-
-            <TextView
-                android:id="@+id/application_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="@dimen/dimen_50dp"
-                style="@style/login_textView"
-                android:text="@string/login_app_name" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_user_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/hint_text_appearence"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                <EditText
-                    android:id="@+id/txtUserName"
-                    android:layout_width="match_parent"
-                    android:hint="@string/login_user_name"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_5dp"
-                    android:text="@={user.userName}"
-                    style="@style/edit_text_style"
-                    android:background="@drawable/edit_text_border">
-                <requestFocus />
-            </EditText>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/hint_text_appearence"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                <EditText
-                    android:id="@+id/txtPassword"
-                    android:layout_width="match_parent"
-                    android:hint="@string/login_password"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_5dp"
-                    android:inputType="textPassword"
-                    android:text="@={user.password}"
-                    style="@style/edit_text_style"
-                    android:imeOptions="actionDone"
-
-                    android:background="@drawable/edit_text_border"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:id="@+id/user_forgotten_pass_link_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_30dp"
-                android:layout_marginBottom="@dimen/dimen_14dp"
-                android:onClick="@{(view) -> presenter.initPasswordReset()}"
-                style="@style/user_login_links"
-                android:text="@string/user_forgotten_pass_link_text" />
-
-            <TextView
-                android:id="@+id/user_registration_link_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_20dp"
-                android:layout_marginBottom="@dimen/dimen_14dp"
-                style="@style/user_login_links"
-                android:onClick="@{(view) -> presenter.initNewUserCreation()}"
-                android:text="@string/user_registration_link_text" />
-
-
-
-        </LinearLayout>
-
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true">
+
+            <LinearLayout
+                android:id="@+id/inputs"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/layout_content_padding">
+
+                <ImageView
+                    android:layout_width="@dimen/user_registration_imview_width"
+                    android:layout_height="@dimen/user_registration_imview_heigth"
+                    android:layout_marginBottom="@{loginActivity.keybordOpen ? @dimen/dimen_10dp: @dimen/dimen_70dp}"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_launcher"
+                    />
+
+
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+                    app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/txtUserName"
+                        android:layout_width="match_parent"
+                        android:hint="@string/login_user_name"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimen_10dp"
+                        android:inputType="text"
+                        android:padding="@dimen/dimen_6dp"
+                        android:text="@={user.userName}"
+                        style="@style/edit_text_style"
+                        android:imeOptions="actionNext"
+                        android:background="@drawable/edit_text_border">
+                        <requestFocus />
+                    </EditText>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+                    app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/txtPassword"
+                        android:layout_width="match_parent"
+                        android:hint="@string/login_password"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/dimen_6dp"
+                        android:layout_margin="@dimen/dimen_5dp"
+                        android:inputType="textPassword"
+                        android:text="@={user.password}"
+                        style="@style/edit_text_style"
+                        android:imeOptions="actionDone"
+                        android:background="@drawable/edit_text_border"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/user_forgotten_pass_link_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dimen_30dp"
+                    android:layout_marginBottom="@dimen/dimen_14dp"
+                    android:onClick="@{(view) -> presenter.initPasswordReset()}"
+                    style="@style/user_login_links"
+                    android:text="@string/user_forgotten_pass_link_text" />
+
+                <TextView
+                    android:id="@+id/user_registration_link_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:layout_marginBottom="@dimen/dimen_14dp"
+                    style="@style/user_login_links"
+                    android:onClick="@{(view) -> presenter.initNewUserCreation()}"
+                    android:text="@string/user_registration_link_text" />
+
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/fullscreen_content_controls"

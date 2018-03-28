@@ -13,4 +13,6 @@ interface LoginActions {
     void initNewUserCreation();
 
     void initPasswordReset();
+
+    int getMarginDimension();
 }

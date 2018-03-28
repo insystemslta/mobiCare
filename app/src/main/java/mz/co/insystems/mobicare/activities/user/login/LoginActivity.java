@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.android.volley.Request;
 
@@ -28,6 +31,10 @@ import mz.co.insystems.mobicare.util.Utilities;
  */
 public class LoginActivity extends BaseActivity implements LoginActions{
 
+    private ActivityLoginBinding activityLoginBinding;
+    private boolean keyboardListenersAttached = false;
+    private ViewGroup rootLayout;
+    private  boolean keybordOpen = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,15 +44,85 @@ public class LoginActivity extends BaseActivity implements LoginActions{
             actionBar.hide();
         }
 
-        ActivityLoginBinding activityLoginBinding = DataBindingUtil.setContentView(this,R.layout.activity_login);
+        activityLoginBinding = DataBindingUtil.setContentView(this,R.layout.activity_login);
         LoginManager loginManager = new LoginManager(LoginActivity.this);
 
         if (getCurrentUser() == null){
             setCurrentUser(new User());
         }
 
+
         activityLoginBinding.setUser(getCurrentUser());
         activityLoginBinding.setPresenter(loginManager);
+
+        attachKeyboardListeners();
+
+    }
+
+
+
+    int monitorNumber =0;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+
+            int viewHeight= activityLoginBinding.getRoot().getRootView().getHeight();
+
+            int rootHight = activityLoginBinding.getRoot().getHeight();
+
+
+
+            int heightDiff = activityLoginBinding.getRoot().getRootView().getHeight() - activityLoginBinding.getRoot().getHeight();
+
+
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(LoginActivity.this);
+
+            if (monitorNumber == 0 && rootHight > monitorNumber){
+                monitorNumber = rootHight;
+                onShowKeyboard();
+            }else if (monitorNumber > 0 && rootHight > monitorNumber){
+                monitorNumber = rootHight;
+                onHideKeyboard();
+            }else if (monitorNumber > 0 && rootHight < monitorNumber){
+                monitorNumber = rootHight;
+                onShowKeyboard();
+            }
+
+
+            /*if(heightDiff <= viewHeight){
+                onHideKeyboard();
+
+                Intent intent = new Intent("KeyboardWillHide");
+                broadcastManager.sendBroadcast(intent);
+            } else {
+                int keyboardHeight = heightDiff - viewHeight;
+                onShowKeyboard();
+
+                Intent intent = new Intent("KeyboardWillShow");
+                intent.putExtra("KeyboardHeight", keyboardHeight);
+                broadcastManager.sendBroadcast(intent);
+            }*/
+        }
+    };
+
+    protected void onShowKeyboard() {
+        this.keybordOpen = true;
+        activityLoginBinding.setLoginActivity(this);
+    }
+    protected void onHideKeyboard() {
+        this.keybordOpen = false;
+        activityLoginBinding.setLoginActivity(this);
+    }
+
+    protected void attachKeyboardListeners() {
+        if (keyboardListenersAttached) {
+            return;
+        }
+
+        rootLayout = (ViewGroup) activityLoginBinding.getRoot();
+        rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+
+        keyboardListenersAttached = true;
     }
 
     @Override
@@ -101,5 +178,26 @@ public class LoginActivity extends BaseActivity implements LoginActions{
     @Override
     public void initPasswordReset() {
 
+    }
+
+    @Override
+    public int getMarginDimension() {
+        return keybordOpen ? R.dimen.dimen_20dp : R.dimen.dimen_50dp;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (keyboardListenersAttached) {
+            rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(keyboardLayoutListener);
+        }
+    }
+
+    public boolean isKeybordOpen() {
+        return keybordOpen;
+    }
+
+    public void setKeybordOpen(boolean keybordOpen) {
+        this.keybordOpen = keybordOpen;
     }
 }

@@ -6,6 +6,7 @@ import android.databinding.InverseBindingAdapter;
 import android.databinding.InverseBindingListener;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
@@ -13,7 +14,7 @@ import android.widget.AdapterView;
  * Created by Voloide Tamele on 3/21/2018.
  */
 
-public class LocalizacaoDataBindingAdapter {
+public class DataBindingAdapter {
 
     @BindingAdapter(value = {"bind:selectedOpt",
             "bind:selectedOptAttrChanged"}, requireAll = false)
@@ -32,13 +33,14 @@ public class LocalizacaoDataBindingAdapter {
         });
 
         spinner.setSelection(getIndexOfItem(spinner, selectedOpt));
-
     }
+
     @InverseBindingAdapter(attribute = "bind:selectedOpt",
             event = "bind:selectedOptAttrChanged")
     public static LocalizacaoObject getSelectedOpt(final AppCompatSpinner spinner) {
         return (LocalizacaoObject)spinner.getSelectedItem();
     }
+
     private static int getIndexOfItem(AppCompatSpinner spinner, LocalizacaoObject item){
         Adapter a = spinner.getAdapter();
         if (a == null) return 0;
@@ -49,5 +51,13 @@ public class LocalizacaoDataBindingAdapter {
             }
         }
         return 0;
+    }
+
+    @BindingAdapter("android:layout_marginBottom")
+    public static void setBottomMargin(View view, float bottomMargin) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin,
+                layoutParams.rightMargin, Math.round(bottomMargin));
+        view.setLayoutParams(layoutParams);
     }
 }

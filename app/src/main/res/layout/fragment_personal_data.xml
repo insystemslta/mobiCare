@@ -59,7 +59,7 @@
                     android:id="@+id/input_layout_apelido"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -70,6 +70,8 @@
                         android:text="@={user.pessoa.surname}"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -78,7 +80,7 @@
                     android:id="@+id/input_layout_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -89,6 +91,8 @@
                         android:text="@={user.pessoa.name}"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -97,7 +101,7 @@
                     android:id="@+id/input_layout_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -109,6 +113,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
                         android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
 
@@ -118,7 +123,7 @@
                     android:id="@+id/input_layout_telemovel_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -129,7 +134,8 @@
                         android:text="@={user.pessoa.contacto.mainMobileNumber}"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
-                        android:inputType="numberSigned"
+                        android:inputType="phone"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -139,7 +145,7 @@
                     android:id="@+id/input_layout_telemovel_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -150,7 +156,8 @@
                         android:text="@={user.pessoa.contacto.auxMobileNumber}"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
-                        android:inputType="numberSigned"
+                        android:inputType="phone"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -248,7 +255,7 @@
                     android:id="@+id/input_layout_rua_av"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -259,6 +266,8 @@
                         android:text="@={user.pessoa.endereco.ruaAvenida}"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
                         style="@style/edit_text_style"
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
@@ -267,7 +276,7 @@
                     android:id="@+id/input_layout_house"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/hint_text_appearence"
+                    app:hintEnabled="false"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                     app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
@@ -276,10 +285,12 @@
                         android:layout_width="match_parent"
                         android:hint="@string/houseNumber"
                         android:text="@={user.pessoa.endereco.ncasa}"
-
+                        android:inputType="text"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_5dp"
+                        android:imeOptions="actionDone"
                         style="@style/edit_text_style"
+
                         android:background="@drawable/edit_text_border"/>
                 </android.support.design.widget.TextInputLayout>
 

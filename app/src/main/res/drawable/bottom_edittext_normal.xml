@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:bottom="@dimen/dimen_1dp"
-        android:left="@dimen/dimen_1dp"
-        android:right="@dimen/dimen_1dp"
-        android:top="@dimen/dimen_1dp">
+        android:left="@dimen/dimen_m3dp"
+        android:right="@dimen/dimen_m3dp"
+        android:top="@dimen/dimen_m3dp">
         <shape android:shape="rectangle" >
             <stroke
                 android:width="@dimen/dimen_1dp"

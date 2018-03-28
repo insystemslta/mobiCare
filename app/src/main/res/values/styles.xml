@@ -43,28 +43,52 @@
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">10dp</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/hint_text_appearence</item>
-        <item name="android:textSize">8sp</item>
+        <item name="android:textSize">7sp</item>
         <item name="android:typeface">sans</item>
     </style>
 
     <style name="edit_text_style">
         <item name="android:textColor">@color/text_color</item>
-        <item name="android:padding">8sp</item>
+        <item name="android:layout_marginTop">@dimen/dimen_30dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_15dp</item>
+        <item name="android:paddingRight">@dimen/dimen_15dp</item>
+        <item name="android:paddingTop">@dimen/dimen_15dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_15dp</item>
+    </style>
+
+    <style name="bottom_border_edit_text_style">
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:background">@drawable/bottom_border_edit_text_border</item>
+        <item name="android:layout_marginTop">@dimen/dimen_30dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_15dp</item>
+        <item name="android:paddingRight">@dimen/dimen_15dp</item>
+        <item name="android:paddingTop">@dimen/dimen_15dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_15dp</item>
     </style>
 
     <style name="spinner_style" parent="android:Widget.Spinner">
-        <item name="android:layout_marginTop">@dimen/dimen_15dp</item>
-        <item name="android:padding">@dimen/dimen_4dp</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/spinner_back</item>
+        <item name="android:layout_marginTop">@dimen/dimen_10dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_8dp</item>
+        <item name="android:paddingRight">@dimen/dimen_50dp</item>
+        <item name="android:paddingTop">@dimen/dimen_5dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_5dp</item>
+        <item name="android:popupBackground">@color/spinner_back_color</item>
+
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="spinner_label">
-        <item name="android:textSize">16sp</item>
+
+
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:typeface">sans</item>
     </style>
@@ -91,6 +115,7 @@
         <item name="android:textSize">14dp</item>
     </style>
 
-    <color name="text_color">#098046</color>
+    <color name="text_color">#131715</color>
     <dimen name="dimen_15dp">15dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
 </resources>

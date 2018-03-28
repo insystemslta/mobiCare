@@ -21,4 +21,5 @@
     <dimen name="dimen_60dp">60dp</dimen>
     <dimen name="dimen_70dp">70dp</dimen>
     <dimen name="dimen_6dp">6dp</dimen>
+    <dimen name="dimen_m3dp">-3dp</dimen>
 </resources>

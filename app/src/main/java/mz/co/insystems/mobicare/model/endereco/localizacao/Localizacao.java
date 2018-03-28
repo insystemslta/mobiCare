@@ -1,6 +1,7 @@
 package mz.co.insystems.mobicare.model.endereco.localizacao;
 
 import android.databinding.Bindable;
+import android.util.Log;
 
 import com.android.volley.Request;
 
@@ -72,7 +73,7 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
     private void doLocalizacaoSync(BaseActivity currentActivity, final boolean isRural) {
         if (Utilities.isNetworkAvailable(this.currentActivity.getApplicationContext())) {
-            this.currentActivity.showLoading(this.currentActivity.getApplicationContext(), null, this.currentActivity.getString(R.string.localizacao_settings_sync_in_progress));
+            //this.currentActivity.showLoading(this.currentActivity.getApplicationContext(), null, this.currentActivity.getString(R.string.localizacao_settings_sync_in_progress));
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -359,8 +360,12 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                     }
                 }
                 currentActivity.hideLoading();
+                onSyncFinished();
             }
         });
+    }
+
+    private void onSyncFinished() {
     }
 
     @Override
@@ -430,7 +435,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
         currentActivity.hideLoading();
         if (this.syncErrorList == null) this.syncErrorList = new ArrayList<>();
         this.syncErrorList.add(message);
+        Log.d("LOCALIZACAO", message.toString());
 
-        Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), syncErrorList.toString());
+        //Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), syncErrorList.toString());
     }
 }

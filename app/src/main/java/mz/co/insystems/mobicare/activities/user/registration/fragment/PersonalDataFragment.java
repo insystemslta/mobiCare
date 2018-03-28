@@ -24,7 +24,10 @@ import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.
 import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
 import mz.co.insystems.mobicare.common.LocalizacaoSpinnerAdapter;
 import mz.co.insystems.mobicare.databinding.PersonalDataFragmentDataBinding;
+import mz.co.insystems.mobicare.model.contacto.Contacto;
+import mz.co.insystems.mobicare.model.endereco.Endereco;
 import mz.co.insystems.mobicare.model.endereco.localizacao.Localizacao;
+import mz.co.insystems.mobicare.model.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
@@ -42,6 +45,7 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
     private Localizacao localizacao;
 
     public PersonalDataFragment() {
+
     }
 
     @Override
@@ -51,10 +55,18 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
         initMunicipalLocalizacao();
 
         PersonalDataFragmentEventHandlerImpl presenter = new PersonalDataFragmentEventHandlerImpl(PersonalDataFragment.this, getMyActivity().getmUserDao());
+        initUser();
+
         binding.setUser(getMyActivity().getCurrentUser());
         binding.setPresenter(presenter);
         binding.setLocalizacao(localizacao);
         return binding.getRoot();
+    }
+
+    private void initUser() {
+        getCurrentUser().setPessoa(new Pessoa());
+        getCurrentUser().getPessoa().setContacto(new Contacto());
+        getCurrentUser().getPessoa().setEndereco(new Endereco());
     }
 
     @Override
@@ -213,11 +225,11 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
 
     @Override
     public void showLoading() {
-
+        getMyActivity().showLoading(getContext(), null, getString(R.string.localizacao_settings_sync_in_progress));
     }
 
     @Override
     public void hideLoading() {
-
+        getMyActivity().hideLoading();
     }
 }

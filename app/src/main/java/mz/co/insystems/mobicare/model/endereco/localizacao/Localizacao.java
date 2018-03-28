@@ -16,6 +16,7 @@ import java.util.List;
 
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.activities.user.registration.fragment.PersonalDataFragment;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
 import mz.co.insystems.mobicare.base.BaseActivity;
 import mz.co.insystems.mobicare.base.BaseVO;
@@ -73,7 +74,7 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
     private void doLocalizacaoSync(BaseActivity currentActivity, final boolean isRural) {
         if (Utilities.isNetworkAvailable(this.currentActivity.getApplicationContext())) {
-            //this.currentActivity.showLoading(this.currentActivity.getApplicationContext(), null, this.currentActivity.getString(R.string.localizacao_settings_sync_in_progress));
+            fragmentView.showLoading();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -89,7 +90,7 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
             }).start();
 
         } else {
-            Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), this.currentActivity.getString(R.string.network_not_available));
+            Utilities.displayCommonAlertDialog(((PersonalDataFragment)fragmentView).getContext(), this.currentActivity.getString(R.string.network_not_available));
         }
     }
 
@@ -359,13 +360,20 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                         e.printStackTrace();
                     }
                 }
-                currentActivity.hideLoading();
+
                 onSyncFinished();
             }
         });
     }
 
     private void onSyncFinished() {
+        fragmentView.hideLoading();
+        try {
+            provinciaList = currentActivity.getProvinciaDao().queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        fragmentView.reloadAllAdapters(this);
     }
 
     @Override
@@ -426,17 +434,17 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                         e.printStackTrace();
                     }
                 }
-                currentActivity.hideLoading();
+                onSyncFinished();
             }
         });
     }
 
     private void onSyncError(String tableNameDistrito, String message) {
-        currentActivity.hideLoading();
+        fragmentView.hideLoading();
         if (this.syncErrorList == null) this.syncErrorList = new ArrayList<>();
         this.syncErrorList.add(message);
         Log.d("LOCALIZACAO", message.toString());
 
-        //Utilities.displayCommonAlertDialog(currentActivity.getApplicationContext(), syncErrorList.toString());
+        Utilities.displayCommonAlertDialog(((PersonalDataFragment)fragmentView).getContext(), syncErrorList.toString());
     }
 }

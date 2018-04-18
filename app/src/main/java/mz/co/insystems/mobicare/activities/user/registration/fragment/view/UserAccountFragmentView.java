@@ -7,5 +7,5 @@ import mz.co.insystems.mobicare.model.user.User;
  */
 
 public interface UserAccountFragmentView {
-    void nextFragment(User user);
+    void  checkUserNameAvailability(User user);
 }

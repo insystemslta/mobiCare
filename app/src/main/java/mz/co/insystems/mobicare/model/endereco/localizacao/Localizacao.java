@@ -27,6 +27,7 @@ import mz.co.insystems.mobicare.model.endereco.municipio.Municipio;
 import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativo;
 import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
+import mz.co.insystems.mobicare.sync.SyncError;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 import mz.co.insystems.mobicare.util.Utilities;
 
@@ -271,8 +272,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void syncProvincias() {
         getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Provincia.TABLE_NAME_PROVINCIA), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
-            public void onError(String message) {
-                onSyncError(Provincia.TABLE_NAME_PROVINCIA, message);
+            public void onError(SyncError error) {
+                onSyncError(Provincia.TABLE_NAME_PROVINCIA, null);
             }
 
             @Override
@@ -306,8 +307,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void syncDistritos() {
         getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
-            public void onError(String message) {
-                onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
+            public void onError(SyncError error) {
+                onSyncError(Distrito.TABLE_NAME_DISTRITO, null);
             }
 
             @Override
@@ -337,8 +338,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void syncPostos() {
         getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(PostoAdministrativo.TABLE_NAME_POSTO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
-            public void onError(String message) {
-                onSyncError(PostoAdministrativo.TABLE_NAME_POSTO, message);
+            public void onError(SyncError error) {
+                onSyncError(PostoAdministrativo.TABLE_NAME_POSTO, null);
             }
 
             @Override
@@ -380,8 +381,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void syncMunicipios() {
         getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Municipio.TABLE_NAME_MUNICIPIO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
-            public void onError(String message) {
-                onSyncError(Municipio.TABLE_NAME_MUNICIPIO, message);
+            public void onError(SyncError error) {
+                onSyncError(Municipio.TABLE_NAME_MUNICIPIO, null);
             }
 
             @Override
@@ -411,8 +412,8 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void syncBairros() {
         getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
-            public void onError(String message) {
-                onSyncError(Distrito.TABLE_NAME_DISTRITO, message);
+            public void onError(SyncError error) {
+                onSyncError(Distrito.TABLE_NAME_DISTRITO, null);
             }
 
             @Override
@@ -423,9 +424,9 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
                 for(int i=0;i<response.length();i++){
                     try {
-                        Distrito distrito = new Distrito();
-                        distrito = distrito.fromJsonObject(response.getJSONObject(i));
-                        currentActivity.getDistritoDao().createIfNotExists(distrito);
+                        Bairro bairro = new Bairro();
+                        bairro = bairro.fromJsonObject(response.getJSONObject(i));
+                        currentActivity.getBairroDao().createIfNotExists(bairro);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {

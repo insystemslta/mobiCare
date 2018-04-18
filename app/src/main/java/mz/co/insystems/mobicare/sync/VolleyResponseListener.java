@@ -8,7 +8,7 @@ import org.json.JSONObject;
  */
 public interface VolleyResponseListener {
 
-    void onError(String message);
+    void onError(SyncError error);
 
     void onResponse(JSONObject response, int myStatusCode);
 

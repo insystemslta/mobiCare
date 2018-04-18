@@ -5,6 +5,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTableConfig;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Voloide Tamele on 10/23/2017.
@@ -22,4 +23,8 @@ public class FarmaciaDaoImpl extends BaseDaoImpl<Farmacia, Integer> implements F
         super(connectionSource, tableConfig);
     }
 
+    @Override
+    public List<Farmacia> searchByDescription(String description) throws SQLException {
+        return (List<Farmacia>) queryBuilder().where().like(Farmacia.COLUMN_FARMACIA_NOME, description);
+    }
 }

@@ -1,5 +1,6 @@
 package mz.co.insystems.mobicare.activities.user.registration.fragment;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.activities.user.login.LoginActivity;
 import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.PersonalDataFragmentEventHandlerImpl;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
@@ -30,6 +32,7 @@ import mz.co.insystems.mobicare.model.endereco.localizacao.Localizacao;
 import mz.co.insystems.mobicare.model.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
+import mz.co.insystems.mobicare.sync.SyncError;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 import mz.co.insystems.mobicare.util.Constants;
 
@@ -157,8 +160,10 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
             public void run() {
                 try {
                     getMyActivity().getService().makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().toJsonObject(), getCurrentUser(), new VolleyResponseListener() {
+
+
                         @Override
-                        public void onError(String message) {
+                        public void onError(SyncError error) {
                             hideLoading();
                         }
 
@@ -173,7 +178,7 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
 
                                 getMyActivity().getService().makeJsonObjectRequest(Request.Method.POST, url, null, getCurrentUser(), new VolleyResponseListener() {
                                     @Override
-                                    public void onError(String message) {
+                                    public void onError(SyncError error) {
                                         hideLoading();
                                     }
 
@@ -189,6 +194,7 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
                                             e.printStackTrace();
                                         }
                                         hideLoading();
+                                        backToLogin(user);
                                     }
 
                                     @Override
@@ -214,6 +220,12 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void backToLogin(User user) {
+        getMyActivity().setCurrentUser(user);
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override

@@ -37,11 +37,13 @@ public class MobicareSyncService {
     public static final int RESULT_FAIL = -1;
     public static final int RESULT_OK = 1;
 
+    public static final int CONNECTION_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 15000;
 
     public static final String API_VERSION = "v1.0";
     public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION;
 
-    public static final String URI_AUTHORITY_TEST = "192.168.4.197";
+    public static final String URI_AUTHORITY_TEST = "192.168.2.50";
 
     public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getByCredentials";
     public static final String SERVICE_ENTITY_USER = User.TABLE_NAME;
@@ -53,6 +55,8 @@ public class MobicareSyncService {
     public static final String JSON_OBJECT_REQUEST_TAG = "json_obj_req";
     public static final String JSON_ARRAY_REQUEST_TAG = "json_array_req";
     public static final String SERVICE_AUTHENTICATE = "authenticate";
+    public static final String SERVICE_CHECK_USER_NAME_AVAILABILITY = "isUserNameAvailable";
+    public static final String SERVICE_SEARCH = "search";
 
     private static int myStatusCode;
 
@@ -78,33 +82,57 @@ public class MobicareSyncService {
             public void onResponse(JSONArray response) {
                 listener.onResponse(response, myStatusCode);
             }
+
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String errorMsg = generateErrorMsg(error);
-                listener.onError(errorMsg);
+                listener.onError(generateErrorMsg(error, myStatusCode));
             }
-        });
+
+        }) {
+            @Override
+            protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                try {
+                    myStatusCode = response.statusCode;
+                    String jsonString = new String(response.data,
+                            HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
+                    return Response.success(new JSONArray(jsonString),
+                            HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                } catch (JSONException je) {
+                    return Response.error(new ParseError(je));
+                }
+            }
+
+
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return buildAuthHeaders(user);
+            }
+        };
 
         // Access the RequestQueue through singleton class.
         NetworkController.getInstance().addToRequestQueue(jsonArrayRequest, JSON_ARRAY_REQUEST_TAG);
     }
 
-    private String generateErrorMsg(VolleyError error){
+    private SyncError generateErrorMsg(VolleyError error, int myStatusCode){
         if (error instanceof NetworkError) {
-            return "A network error as occured ";
+            return new SyncError(myStatusCode, "A network error as occured ");
         } else if (error instanceof ServerError) {
-            return "A server error as occured ";
+            return new SyncError(myStatusCode, "A server error as occured ");
         } else if (error instanceof AuthFailureError) {
-            return "An authentication error as occured ";
+            return new SyncError(myStatusCode, "An authentication error as occured ");
         } else if (error instanceof ParseError) {
-            return "A parse error as occured ";
+            return new SyncError(myStatusCode, "A parse error as occured ");
         } else if (error instanceof NoConnectionError) {
-            return "No connection ";
+            return new SyncError(myStatusCode, "No connection ");
         } else if (error instanceof TimeoutError) {
-            return "Connection timeout";
+            return new SyncError(myStatusCode, "Connection timeout");
         }
-        return error.toString();
+        return new SyncError(myStatusCode, error.toString());
     }
 
     /**
@@ -126,8 +154,7 @@ public class MobicareSyncService {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String errorMsg = generateErrorMsg(error);
-                        listener.onError(error.toString());
+                        listener.onError(generateErrorMsg(error, myStatusCode));
                     }
                 }) {
 

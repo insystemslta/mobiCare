@@ -19,7 +19,7 @@ public class UserAccountFragmentEventHandlerImpl implements UserAccountFragmentE
     }
 
     public void nextFragment(User user) {
-        userAccountFragmentView.nextFragment(user);
+        userAccountFragmentView.checkUserNameAvailability(user);
     }
 
     public void cancelOperation() {

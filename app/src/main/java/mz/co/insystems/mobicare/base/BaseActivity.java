@@ -22,6 +22,9 @@ import mz.co.insystems.mobicare.model.endereco.distrito.DistritoDao;
 import mz.co.insystems.mobicare.model.endereco.municipio.MunicipioDao;
 import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdministrativoDao;
 import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
+import mz.co.insystems.mobicare.model.farmacia.FarmaciaDao;
+import mz.co.insystems.mobicare.model.farmacia.servicos.ServicoDao;
+import mz.co.insystems.mobicare.model.farmaco.FarmacoDao;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.model.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
@@ -39,6 +42,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ProvinciaDao provinciaDao;
     private DistritoDao distritoDao;
     private MunicipioDao municipioDao;
+    private FarmaciaDao farmaciaDao;
+    private FarmacoDao farmacoDao;
+    private ServicoDao servicoDao;
+
     private PostoAdministrativoDao postoDao;
     private BairroDao bairroDao;
 
@@ -174,6 +181,33 @@ public abstract class BaseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return municipioDao;
+    }
+
+    public FarmaciaDao getFarmaciaDao() {
+        try {
+            farmaciaDao = getHelper(getApplicationContext()).getFarmaciaDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return farmaciaDao;
+    }
+
+    public FarmacoDao getFarmacoDao() {
+        try {
+            farmacoDao = getHelper(getApplicationContext()).getFarmacoDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return farmacoDao;
+    }
+
+    public ServicoDao getServicoDao() {
+        try {
+            servicoDao = getHelper(getApplicationContext()).getServicoDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return servicoDao;
     }
 
     public PostoAdministrativoDao getPostoDao() {

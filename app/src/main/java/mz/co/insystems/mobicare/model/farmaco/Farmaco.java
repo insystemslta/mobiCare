@@ -2,16 +2,28 @@ package mz.co.insystems.mobicare.model.farmaco;
 
 import android.databinding.Bindable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DatabaseField;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.base.json.JsonParseble;
+import mz.co.insystems.mobicare.common.SearchbleObject;
+import mz.co.insystems.mobicare.model.contacto.Contacto;
+import mz.co.insystems.mobicare.model.endereco.Endereco;
+import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.farmaco.grupofarmaco.GrupoFarmaco;
 
 /**
  *
  */
-public class Farmaco extends BaseVO {
+public class Farmaco extends BaseVO implements JsonParseble<Farmaco>, SearchbleObject {
 
     public static final String TABLE_NAME_FARMACO			        = "farmaco";
     public static final String COLUMN_FARMACO_ID 			    = "id";
@@ -19,6 +31,7 @@ public class Farmaco extends BaseVO {
     public static final String COLUMN_FARMACO_DISPONIBILIDADE = "disponibilidade";
     public static final String COLUMN_FARMACO_PRECO 	= "preco";
     public static final String COLUMN_FARMACO_GRUPO 	= "grupofarmaco_id";
+    public static final String COLUMN_FARMACIA_ID 	= "farmacia_id";
 
 
     public static final int FARMACO_DISPONIVEL 	=1;
@@ -26,10 +39,18 @@ public class Farmaco extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
+    @DatabaseField
     private long id;
+    @DatabaseField
     private String designacao;
+    @DatabaseField
     private int disponibilidade;
+    @DatabaseField
     private double preco;
+    @DatabaseField(columnName = COLUMN_FARMACIA_ID, foreign = true, foreignAutoRefresh = true)
+    private Farmacia farmacia;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @DatabaseField(columnName = COLUMN_FARMACO_GRUPO, foreign = true, foreignAutoRefresh = true)
     private GrupoFarmaco grupoFarmaco;
@@ -45,6 +66,25 @@ public class Farmaco extends BaseVO {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public Endereco getEndereco() {
+        throw new RuntimeException("Metodo nao aplicavel");
+    }
+
+    @Override
+    public Contacto getContacto() {
+        throw new RuntimeException("Metodo nao aplicavel");
+    }
+
+    @Override
+    public Farmacia getFarmacia() {
+        return this.farmacia;
+    }
+
+    public void setFarmacia(Farmacia farmacia) {
+        this.farmacia = farmacia;
     }
 
     public void setId(long id) {
@@ -85,4 +125,29 @@ public class Farmaco extends BaseVO {
         notifyPropertyChanged(BR.grupoFarmaco);
     }
 
+    @Override
+    public String getDescricao() {
+        return this.designacao;
+    }
+
+    @Override
+    public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(this));
+        return jsonObject;
+    }
+
+    @Override
+    public String toJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
+    }
+
+    @Override
+    public Farmaco fromJson(String jsonData) throws IOException {
+        return objectMapper.readValue(jsonData, Farmaco.class);
+    }
+
+    @Override
+    public Farmaco fromJsonObject(JSONObject response) throws IOException {
+        return objectMapper.readValue(String.valueOf(response), Farmaco.class);
+    }
 }

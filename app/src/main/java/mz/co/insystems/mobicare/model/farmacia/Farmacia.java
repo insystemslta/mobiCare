@@ -3,13 +3,21 @@ package mz.co.insystems.mobicare.model.farmacia;
 import android.databinding.Bindable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Collection;
 
 import mz.co.insystems.mobicare.base.BaseVO;
+import mz.co.insystems.mobicare.base.json.JsonParseble;
+import mz.co.insystems.mobicare.common.SearchbleObject;
 import mz.co.insystems.mobicare.model.contacto.Contacto;
 import mz.co.insystems.mobicare.model.endereco.Endereco;
 import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
@@ -19,7 +27,7 @@ import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Farmacia.TABLE_NAME_FARMACIA, daoClass = FarmaciaDaoImpl.class)
-public class Farmacia extends BaseVO {
+public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, SearchbleObject {
     public static final String TABLE_NAME_FARMACIA			                = "farmacia";
     public static final String COLUMN_FARMACIA_ID 			                = "id";
     public static final String COLUMN_FARMACIA_NOME			                = "nome";
@@ -43,6 +51,9 @@ public class Farmacia extends BaseVO {
     private Contacto contacto;
     @ForeignCollectionField
     private Collection<Servico> servicos;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     public Farmacia(int id, String nome, int estado, Endereco endereco, Contacto contacto) {
         this.id = id;
         this.nome = nome;
@@ -53,7 +64,6 @@ public class Farmacia extends BaseVO {
     public Farmacia() {
 
     }
-
 
     @Override
     public String toString() {
@@ -66,7 +76,7 @@ public class Farmacia extends BaseVO {
                 '}';
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -102,6 +112,16 @@ public class Farmacia extends BaseVO {
         return contacto;
     }
 
+    @Override
+    public Farmacia getFarmacia() {
+        throw new RuntimeException("Metodo nao aplicavel");
+    }
+
+    @Override
+    public int getDisponibilidade() {
+        throw new RuntimeException("Metodo nao aplicavel");
+    }
+
     public void setContacto(Contacto contacto) {
         this.contacto = contacto;
     }
@@ -115,5 +135,29 @@ public class Farmacia extends BaseVO {
     }
 
 
+    @Override
+    public JSONObject toJsonObject() throws JsonProcessingException, JSONException {
+        JSONObject jsonObject = new JSONObject(objectMapper.writeValueAsString(this));
+        return jsonObject;
+    }
 
+    @Override
+    public String toJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
+    }
+
+    @Override
+    public Farmacia fromJson(String jsonData) throws IOException {
+        return objectMapper.readValue(jsonData, Farmacia.class);
+    }
+
+    @Override
+    public Farmacia fromJsonObject(JSONObject response) throws IOException {
+        return objectMapper.readValue(String.valueOf(response), Farmacia.class);
+    }
+
+    @Override
+    public String getDescricao() {
+        return this.nome;
+    }
 }

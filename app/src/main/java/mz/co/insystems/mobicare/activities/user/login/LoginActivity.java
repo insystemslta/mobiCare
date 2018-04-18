@@ -17,11 +17,13 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 
 import mz.co.insystems.mobicare.R;
+import mz.co.insystems.mobicare.activities.farmacia.SearchActivity;
 import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
 import mz.co.insystems.mobicare.base.BaseActivity;
 import mz.co.insystems.mobicare.databinding.ActivityLoginBinding;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
+import mz.co.insystems.mobicare.sync.SyncError;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
 import mz.co.insystems.mobicare.util.Utilities;
 
@@ -35,6 +37,7 @@ public class LoginActivity extends BaseActivity implements LoginActions{
     private boolean keyboardListenersAttached = false;
     private ViewGroup rootLayout;
     private  boolean keybordOpen = false;
+    private int monitorNumber =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,17 +54,15 @@ public class LoginActivity extends BaseActivity implements LoginActions{
             setCurrentUser(new User());
         }
 
-
         activityLoginBinding.setUser(getCurrentUser());
         activityLoginBinding.setPresenter(loginManager);
 
         attachKeyboardListeners();
-
     }
 
 
 
-    int monitorNumber =0;
+
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
@@ -89,19 +90,6 @@ public class LoginActivity extends BaseActivity implements LoginActions{
             }
 
 
-            /*if(heightDiff <= viewHeight){
-                onHideKeyboard();
-
-                Intent intent = new Intent("KeyboardWillHide");
-                broadcastManager.sendBroadcast(intent);
-            } else {
-                int keyboardHeight = heightDiff - viewHeight;
-                onShowKeyboard();
-
-                Intent intent = new Intent("KeyboardWillShow");
-                intent.putExtra("KeyboardHeight", keyboardHeight);
-                broadcastManager.sendBroadcast(intent);
-            }*/
         }
     };
 
@@ -152,14 +140,18 @@ public class LoginActivity extends BaseActivity implements LoginActions{
     }
 
     private void redirectToSearch() {
-        Intent intent = new Intent(getApplicationContext(), UserRegistrationActivity.class);
+        Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+        intent.putExtra(User.TABLE_NAME, getCurrentUser());
         startActivity(intent);
     }
 
     private void tryToUpdateLoginStatusOnWeb(User user, String url) {
         service.makeJsonObjectRequest(Request.Method.POST, url, null, user, new VolleyResponseListener() {
+
             @Override
-            public void onError(String message) {}
+            public void onError(SyncError error) {
+
+            }
 
             @Override
             public void onResponse(JSONObject response, int myStatusCode) {}
@@ -183,6 +175,11 @@ public class LoginActivity extends BaseActivity implements LoginActions{
     @Override
     public int getMarginDimension() {
         return keybordOpen ? R.dimen.dimen_20dp : R.dimen.dimen_50dp;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

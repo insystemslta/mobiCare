@@ -27,6 +27,9 @@ import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
 import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.farmacia.FarmaciaDao;
 import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
+import mz.co.insystems.mobicare.model.farmacia.servicos.ServicoDao;
+import mz.co.insystems.mobicare.model.farmaco.Farmaco;
+import mz.co.insystems.mobicare.model.farmaco.FarmacoDao;
 import mz.co.insystems.mobicare.model.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.pessoa.PessoaDao;
 import mz.co.insystems.mobicare.model.user.User;
@@ -47,6 +50,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private FarmaciaDao farmaciaDao;
     private EnderecoDao enderecoDao;
     private ContactDao contactDao;
+    private FarmacoDao farmacoDao;
+    private ServicoDao servicoDao;
 
     private ProvinciaDao provinciaDao;
     private DistritoDao distritoDao;
@@ -97,6 +102,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             mUserDao = getDao(User.class);
         }
         return mUserDao;
+    }
+
+    public FarmacoDao getFarmacoDao() throws java.sql.SQLException {
+        if (farmacoDao == null){
+            farmacoDao = getDao(Farmaco.class);
+        }
+        return farmacoDao;
+    }
+
+    public ServicoDao getServicoDao() throws java.sql.SQLException {
+        if (servicoDao == null){
+            servicoDao = getDao(Servico.class);
+        }
+        return servicoDao;
     }
 
 

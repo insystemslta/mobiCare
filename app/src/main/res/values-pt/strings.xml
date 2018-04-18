@@ -36,4 +36,11 @@
     <string name="login_password">Palavra-passe</string>
     <string name="user_password_invalid">Os dados de utilizador ou palavra passe são inválidos.</string>
     <string name="login_app_name">mobiCare</string>
+    <string name="user_name_is_taken">User name not available, try another one!</string>
+    <string name="checking_user_name_availability">Checking user name availability, please wait...</string>
+    <string name="passwords_not_match">Informed password does not match, please check!</string>
+    <string name="user_name_short">Please make sure the user name has at lest four carateres!</string>
+    <string name="passwords_short">Please make sure your password has at lest four carateres!</string>
+    <string name="search_what_you_want">Search what you want!</string>
+    <string name="searching">Searching...</string>
 </resources>

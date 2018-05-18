@@ -145,8 +145,6 @@
     </style>
 
 
-    <color name="text_color">#131715</color>
-    <color name="white">#ffffff</color>
-    <dimen name="dimen_15dp">15dp</dimen>
-    <dimen name="dimen_8dp">8dp</dimen>
+
+
 </resources>

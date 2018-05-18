@@ -25,6 +25,7 @@ import mz.co.insystems.mobicare.model.endereco.provincia.ProvinciaDao;
 import mz.co.insystems.mobicare.model.farmacia.FarmaciaDao;
 import mz.co.insystems.mobicare.model.farmacia.servicos.ServicoDao;
 import mz.co.insystems.mobicare.model.farmaco.FarmacoDao;
+import mz.co.insystems.mobicare.model.search.RecentRearhDao;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.model.user.UserDao;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
@@ -45,6 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private FarmaciaDao farmaciaDao;
     private FarmacoDao farmacoDao;
     private ServicoDao servicoDao;
+    private RecentRearhDao recentRearhDao;
 
     private PostoAdministrativoDao postoDao;
     private BairroDao bairroDao;
@@ -228,7 +230,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         return bairroDao;
     }
 
+    public RecentRearhDao getRecentRearhDao() {
+        try {
+            recentRearhDao = getHelper(getApplicationContext()).getRecentRearhDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recentRearhDao;
+    }
+
     public MobicareSyncService getService() {
         return service;
     }
+
+    public abstract boolean noSyncError();
+
+    public abstract boolean syncOperationDone();
 }

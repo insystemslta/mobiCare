@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.UserAccountFragment;
@@ -27,12 +27,9 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-
-        addSimpleToolbar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null){
             UserAccountFragment accountFragment = new UserAccountFragment();
@@ -61,5 +58,15 @@ public class UserRegistrationActivity extends BaseActivity implements UserRegist
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public boolean noSyncError() {
+        return service.noSyncError();
+    }
+
+    @Override
+    public boolean syncOperationDone() {
+        return service.syncOperationDone();
     }
 }

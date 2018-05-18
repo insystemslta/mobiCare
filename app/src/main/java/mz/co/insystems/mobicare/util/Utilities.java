@@ -1,9 +1,12 @@
 package mz.co.insystems.mobicare.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -45,6 +48,25 @@ public class Utilities {
             }
         }
         return hexString.toString();
+    }
+
+    public static String MD5DeCrypt(String str){
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        md.update(str.getBytes());
+
+        byte byteData[] = md.digest();
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -117,7 +139,16 @@ public class Utilities {
 
     public static boolean listHasElements(List list) {
         if (list == null) return false;
-        if (list.size() <= 0) return false;
-        return list.isEmpty();
+        return !(list.size() <= 0 || list.isEmpty());
+    }
+
+    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public static Bitmap getImage(byte[] bytes){
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }

@@ -14,17 +14,19 @@ import com.android.volley.Request;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationActivity;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.UserAccountFragmentEventHandlerImpl;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.view.UserAccountFragmentView;
 import mz.co.insystems.mobicare.common.FragmentChangeListener;
+import mz.co.insystems.mobicare.common.SyncStatus;
 import mz.co.insystems.mobicare.databinding.FragmentUserAccountBinding;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.SyncError;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
-import mz.co.insystems.mobicare.util.Constants;
 import mz.co.insystems.mobicare.util.Utilities;
 
 /**
@@ -33,7 +35,11 @@ import mz.co.insystems.mobicare.util.Utilities;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class UserAccountFragment extends Fragment implements UserAccountFragmentView{
+public class UserAccountFragment extends Fragment implements UserAccountFragmentView, Runnable{
+
+    private boolean isUserNameAvalable;
+    private boolean noSyncError;
+    private Thread userCheckThread;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,16 +90,17 @@ public class UserAccountFragment extends Fragment implements UserAccountFragment
     @Override
     public void checkUserNameAvailability(User user) {
         if (Utilities.isNetworkAvailable(getContext())){
-            proccedWithUserNameCheck(user);
+            getMyActivity().setCurrentUser(user);
+            if (userNameLenghtIsValid()) {
+                userCheckThread = new Thread(this);
+                userCheckThread.start();
+            }else Utilities.displayCommonAlertDialog(getContext(), getString(R.string.user_name_short));
         }else {
             Utilities.displayCommonAlertDialog(getContext(),getString(R.string.network_not_available));
         }
     }
 
     private void proccedWithUserNameCheck(User user) {
-        if (userNameLenghtIsValid()) {
-            getMyActivity().showLoading(getContext(), null, getString(R.string.checking_user_name_availability));
-            getMyActivity().setCurrentUser(user);
 
             Uri.Builder uri = getMyActivity().getService().initServiceUri();
             uri.appendPath(User.TABLE_NAME);
@@ -101,33 +108,33 @@ public class UserAccountFragment extends Fragment implements UserAccountFragment
             uri.appendPath(user.getUserName());
             final String url = uri.build().toString();
 
-            new Thread(new Runnable() {
+            getMyActivity().getService().makeJsonObjectRequest(Request.Method.GET, url, null, getMyActivity().getCurrentUser(), new VolleyResponseListener() {
                 @Override
-                public void run() {
-                    getMyActivity().getService().makeJsonObjectRequest(Request.Method.GET, url, null, getMyActivity().getCurrentUser(), new VolleyResponseListener() {
-                        @Override
-                        public void onError(SyncError error) {
-                            getMyActivity().hideLoading();
-                        }
+                public void onError(SyncError error) {
+                    setNoSyncError(true);
+                }
 
-                        @Override
-                        public void onResponse(JSONObject response, int myStatusCode) {
-                            getMyActivity().hideLoading();
-                            if (myStatusCode == Constants.HTTP_CONTINUE) {
-                                nextFragment();
-                            } else {
-                                Utilities.displayCommonAlertDialog(getContext(), getString(R.string.user_name_is_taken));
-                            }
+                @Override
+                public void onResponse(JSONObject response, int myStatusCode) {
+                    try {
+                        SyncStatus syncStatus = new SyncStatus().fromJsonObject(response);
+                        if (syncStatus.getCode() == 100){
+                            setUserNameAvalable(true);
+                        } else {
+                            setUserNameAvalable(false);
                         }
-
-                        @Override
-                        public void onResponse(JSONArray response, int myStatusCode) {
-                        }
-                    });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
-            }).start();
-        }else Utilities.displayCommonAlertDialog(getContext(), getString(R.string.user_name_short));
+
+                @Override
+                public void onResponse(JSONArray response, int myStatusCode) {
+                }
+            });
+
+
     }
 
     private boolean userNameLenghtIsValid() {
@@ -137,5 +144,53 @@ public class UserAccountFragment extends Fragment implements UserAccountFragment
 
     public void cancelOperation() {
 
+    }
+
+    @Override
+    public void run() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMyActivity().showLoading(getContext(), null, getString(R.string.checking_user_name_availability));
+            }
+        });
+
+        proccedWithUserNameCheck(getMyActivity().getCurrentUser());
+        try {
+            userCheckThread.join(getMyActivity().getService().TWENTY_SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMyActivity().hideLoading();
+                nextFragment();
+                /*if (getMyActivity().noSyncError()){
+                    if (getMyActivity().syncOperationDone()){
+                        if (isUserNameAvalable()) nextFragment();
+                        else Utilities.displayCommonAlertDialog(getContext(), getString(R.string.user_name_is_taken));
+                    } else Utilities.displayCommonAlertDialog(getContext(), getString(R.string.sync_time_out));
+                } else Utilities.displayCommonAlertDialog(getContext(), getString(R.string.error_msg_sync_failed));*/
+            }
+        });
+
+    }
+
+    public boolean isUserNameAvalable() {
+        return isUserNameAvalable;
+    }
+
+    public void setUserNameAvalable(boolean userNameAvalable) {
+        isUserNameAvalable = userNameAvalable;
+    }
+
+    public boolean isNoSyncError() {
+        return noSyncError;
+    }
+
+    public void setNoSyncError(boolean noSyncError) {
+        this.noSyncError = noSyncError;
     }
 }

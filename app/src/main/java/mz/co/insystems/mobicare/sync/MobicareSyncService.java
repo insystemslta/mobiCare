@@ -40,25 +40,29 @@ public class MobicareSyncService {
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
-    public static final String API_VERSION = "v1.0";
-    public static final String URI_AUTHORITY = "mobicare.insystems.co.mz/"+API_VERSION;
+    public static final String API_VERSION      = "v1.0";
+    public static final String URI_AUTHORITY    = "mobicare.insystems.co.mz/"+API_VERSION;
 
-    public static final String URI_AUTHORITY_TEST = "192.168.2.50";
+    public static final String URI_AUTHORITY_TEST = "192.168.4.197";
 
-    public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "user/getByCredentials";
+    public static final String URL_SERVICE_USER_GET_BY_CREDENTIALS	= "getByCredentials";
     public static final String SERVICE_ENTITY_USER = User.TABLE_NAME;
 
-    public static final String SERVICE_CREATE = "create";
-    public static final String SERVICE_GET_BY_ID = "getById";
-    public static final String SERVICE_GET_ALL = "getAll";
+    public static final String SERVICE_CREATE       = "create";
+    public static final String SERVICE_GET_BY_ID    = "getById";
+    public static final String SERVICE_GET_ALL      = "getAll";
+    public static final String SERVICE_SEARCH       = "search";
 
-    public static final String JSON_OBJECT_REQUEST_TAG = "json_obj_req";
-    public static final String JSON_ARRAY_REQUEST_TAG = "json_array_req";
-    public static final String SERVICE_AUTHENTICATE = "authenticate";
+    public static final String JSON_OBJECT_REQUEST_TAG  = "json_obj_req";
+    public static final String JSON_ARRAY_REQUEST_TAG   = "json_array_req";
+    public static final String SERVICE_AUTHENTICATE     = "authenticate";
     public static final String SERVICE_CHECK_USER_NAME_AVAILABILITY = "isUserNameAvailable";
-    public static final String SERVICE_SEARCH = "search";
+    public static final long TWENTY_SECONDS = 20000;
+
 
     private static int myStatusCode;
+    private boolean noSyncError;
+    private boolean syncOperationDone;
 
     public Uri.Builder initServiceUri(){
         Uri.Builder uri =  new Uri.Builder();
@@ -80,13 +84,18 @@ public class MobicareSyncService {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(method, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                noSyncError = false;
+                syncOperationDone = true;
                 listener.onResponse(response, myStatusCode);
+
             }
 
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                noSyncError = true;
+                syncOperationDone = true;
                 listener.onError(generateErrorMsg(error, myStatusCode));
             }
 
@@ -148,12 +157,16 @@ public class MobicareSyncService {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        noSyncError = true;
+                        syncOperationDone = true;
                         listener.onResponse(response, myStatusCode);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        noSyncError = false;
+                        syncOperationDone = true;
                         listener.onError(generateErrorMsg(error, myStatusCode));
                     }
                 }) {
@@ -217,5 +230,13 @@ public class MobicareSyncService {
                 Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
         headerMap.put("Authorization", "Basic " + base64EncodedCredentials);
         return headerMap;
+    }
+
+    public boolean noSyncError() {
+        return noSyncError;
+    }
+
+    public boolean syncOperationDone() {
+        return syncOperationDone;
     }
 }

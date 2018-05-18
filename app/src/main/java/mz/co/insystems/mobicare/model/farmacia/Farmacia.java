@@ -5,6 +5,7 @@ import android.databinding.Bindable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -15,19 +16,20 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Collection;
 
+import mz.co.insystems.mobicare.BR;
 import mz.co.insystems.mobicare.base.BaseVO;
 import mz.co.insystems.mobicare.base.json.JsonParseble;
-import mz.co.insystems.mobicare.common.SearchbleObject;
 import mz.co.insystems.mobicare.model.contacto.Contacto;
 import mz.co.insystems.mobicare.model.endereco.Endereco;
 import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
+import mz.co.insystems.mobicare.model.search.Searchble;
 
 /**
  * Created by Voloide Tamele on 10/23/2017.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DatabaseTable(tableName = Farmacia.TABLE_NAME_FARMACIA, daoClass = FarmaciaDaoImpl.class)
-public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, SearchbleObject {
+public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, Searchble {
     public static final String TABLE_NAME_FARMACIA			                = "farmacia";
     public static final String COLUMN_FARMACIA_ID 			                = "id";
     public static final String COLUMN_FARMACIA_NOME			                = "nome";
@@ -51,6 +53,12 @@ public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, Searchbl
     private Contacto contacto;
     @ForeignCollectionField
     private Collection<Servico> servicos;
+
+    @DatabaseField(dataType = DataType.BYTE_ARRAY)
+    private byte[] logo;
+
+    @DatabaseField(dataType = DataType.BYTE_ARRAY)
+    private byte[] image;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -119,7 +127,7 @@ public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, Searchbl
 
     @Override
     public int getDisponibilidade() {
-        throw new RuntimeException("Metodo nao aplicavel");
+        return this.estado;
     }
 
     public void setContacto(Contacto contacto) {
@@ -134,6 +142,25 @@ public class Farmacia extends BaseVO implements JsonParseble<Farmacia>, Searchbl
         this.servicos = servicos;
     }
 
+    @Bindable
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
+        notifyPropertyChanged(BR.logo);
+    }
+
+    @Bindable
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+        notifyPropertyChanged(BR.image);
+    }
 
     @Override
     public JSONObject toJsonObject() throws JsonProcessingException, JSONException {

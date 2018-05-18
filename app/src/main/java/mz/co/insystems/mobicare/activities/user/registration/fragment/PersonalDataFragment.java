@@ -25,6 +25,7 @@ import mz.co.insystems.mobicare.activities.user.registration.UserRegistrationAct
 import mz.co.insystems.mobicare.activities.user.registration.fragment.presenter.PersonalDataFragmentEventHandlerImpl;
 import mz.co.insystems.mobicare.activities.user.registration.fragment.view.PersonalDataFragmentView;
 import mz.co.insystems.mobicare.common.LocalizacaoSpinnerAdapter;
+import mz.co.insystems.mobicare.common.SyncStatus;
 import mz.co.insystems.mobicare.databinding.PersonalDataFragmentDataBinding;
 import mz.co.insystems.mobicare.model.contacto.Contacto;
 import mz.co.insystems.mobicare.model.endereco.Endereco;
@@ -34,7 +35,7 @@ import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.SyncError;
 import mz.co.insystems.mobicare.sync.VolleyResponseListener;
-import mz.co.insystems.mobicare.util.Constants;
+import mz.co.insystems.mobicare.util.Utilities;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,10 +43,16 @@ import mz.co.insystems.mobicare.util.Constants;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class PersonalDataFragment extends Fragment implements PersonalDataFragmentView {
+public class PersonalDataFragment extends Fragment implements PersonalDataFragmentView, Runnable {
 
     private PersonalDataFragmentDataBinding binding;
     private Localizacao localizacao;
+    private boolean isUserSent;
+    private boolean isUserCreated;
+
+    private boolean noSyncError;
+
+    private Thread userSyncThread;
 
     public PersonalDataFragment() {
 
@@ -149,77 +156,8 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
 
     @Override
     public void doSave(User user) {
-        showLoading();
-        Uri.Builder uri =  getMyActivity().getService().initServiceUri();
-        uri.appendPath(User.TABLE_NAME);
-        uri.appendPath(MobicareSyncService.SERVICE_CREATE);
-        final String url = uri.build().toString();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    getMyActivity().getService().makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().toJsonObject(), getCurrentUser(), new VolleyResponseListener() {
-
-
-                        @Override
-                        public void onError(SyncError error) {
-                            hideLoading();
-                        }
-
-                        @Override
-                        public void onResponse(JSONObject response, int myStatusCode) {
-                            if (myStatusCode == Constants.HTTP_CREATED){
-
-                                Uri.Builder uri =  getMyActivity().getService().initServiceUri();
-                                uri.appendPath(User.TABLE_NAME);
-                                uri.appendPath(MobicareSyncService.URL_SERVICE_USER_GET_BY_CREDENTIALS);
-                                final String url = uri.build().toString();
-
-                                getMyActivity().getService().makeJsonObjectRequest(Request.Method.POST, url, null, getCurrentUser(), new VolleyResponseListener() {
-                                    @Override
-                                    public void onError(SyncError error) {
-                                        hideLoading();
-                                    }
-
-                                    @Override
-                                    public void onResponse(JSONObject response, int myStatusCode) {
-                                        User user = new User();
-                                        try {
-                                            user = user.fromJsonObject(response);
-                                            getMyActivity().getmUserDao().createIfNotExists(user);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        } catch (SQLException e) {
-                                            e.printStackTrace();
-                                        }
-                                        hideLoading();
-                                        backToLogin(user);
-                                    }
-
-                                    @Override
-                                    public void onResponse(JSONArray response, int myStatusCode) {}
-                                });
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onResponse(JSONArray response, int myStatusCode) {}
-                    });
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        try {
-            getMyActivity().getmUserDao().createIfNotExists(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userSyncThread = new Thread(this);
+        userSyncThread.start();
     }
 
     private void backToLogin(User user) {
@@ -243,5 +181,141 @@ public class PersonalDataFragment extends Fragment implements PersonalDataFragme
     @Override
     public void hideLoading() {
         getMyActivity().hideLoading();
+    }
+
+    @Override
+    public void run() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showLoading();
+            }
+        });
+
+            syncUserToWeb();
+        try {
+            userSyncThread.join(MobicareSyncService.TWENTY_SECONDS);
+
+            getUserFromWeb();
+
+            userSyncThread.join(MobicareSyncService.TWENTY_SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideLoading();
+                if (isUserCreated()) {
+                    try {
+                        backToLogin(getMyActivity().getmUserDao().getByCredencials(getCurrentUser()));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    private void syncUserToWeb(){
+        Uri.Builder uri =  getMyActivity().getService().initServiceUri();
+        uri.appendPath(User.TABLE_NAME);
+        uri.appendPath(MobicareSyncService.SERVICE_CREATE);
+        final String url = uri.build().toString();
+
+        try {
+            getMyActivity().getService().makeJsonObjectRequest(Request.Method.PUT, url, getCurrentUser().toJsonObject(), getCurrentUser(), new VolleyResponseListener() {
+
+                @Override
+                public void onError(SyncError error) {
+                    setNoSyncError(true);
+                }
+
+                @Override
+                public void onResponse(JSONObject response, int myStatusCode) {
+                    try {
+                        SyncStatus syncStatus = new SyncStatus().fromJsonObject(response);
+                        if (syncStatus.getCode() == 100){
+                            setUserSent(true);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onResponse(JSONArray response, int myStatusCode) {}
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getUserFromWeb(){
+
+        Uri.Builder uri =  getMyActivity().getService().initServiceUri();
+        uri.appendPath(User.TABLE_NAME);
+        uri.appendPath(MobicareSyncService.URL_SERVICE_USER_GET_BY_CREDENTIALS);
+        uri.appendPath(getCurrentUser().getUserName());
+        uri.appendPath(Utilities.MD5Crypt(getCurrentUser().getPassword()));
+        final String url = uri.build().toString();
+
+        try {
+            getMyActivity().getService().makeJsonObjectRequest(Request.Method.GET, url, getCurrentUser().toJsonObject(), getCurrentUser(), new VolleyResponseListener() {
+                @Override
+                public void onError(SyncError error) {
+                    setNoSyncError(true);
+                }
+
+                @Override
+                public void onResponse(JSONObject response, int myStatusCode) {
+                    try {
+                        getMyActivity().getmUserDao().createOrUpdate(new User().fromJsonObject(response));
+                        setUserCreated(true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onResponse(JSONArray response, int myStatusCode) {}
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isUserSent() {
+        return isUserSent;
+    }
+
+    public void setUserSent(boolean userSent) {
+        isUserSent = userSent;
+    }
+
+    public boolean isUserCreated() {
+        return isUserCreated;
+    }
+
+    public void setUserCreated(boolean userCreated) {
+        isUserCreated = userCreated;
+    }
+
+    public boolean isNoSyncError() {
+        return noSyncError;
+    }
+
+    public void setNoSyncError(boolean noSyncError) {
+        this.noSyncError = noSyncError;
     }
 }

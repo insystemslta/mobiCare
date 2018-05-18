@@ -32,6 +32,8 @@ import mz.co.insystems.mobicare.model.farmaco.Farmaco;
 import mz.co.insystems.mobicare.model.farmaco.FarmacoDao;
 import mz.co.insystems.mobicare.model.pessoa.Pessoa;
 import mz.co.insystems.mobicare.model.pessoa.PessoaDao;
+import mz.co.insystems.mobicare.model.search.RecentRearhDao;
+import mz.co.insystems.mobicare.model.search.RecentSearch;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.model.user.UserDao;
 
@@ -58,6 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private MunicipioDao municipioDao;
     private BairroDao bairroDao;
     private PostoAdministrativoDao postoAdministrativoDao;
+    private RecentRearhDao recentRearhDao;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -82,6 +85,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Municipio.class);
             TableUtils.createTable(connectionSource, PostoAdministrativo.class);
             TableUtils.createTable(connectionSource, Bairro.class);
+            TableUtils.createTable(connectionSource, RecentSearch.class);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -178,5 +182,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             postoAdministrativoDao = getDao(PostoAdministrativo.class);
         }
         return postoAdministrativoDao;
+    }
+
+    public RecentRearhDao getRecentRearhDao() throws SQLException {
+        if (recentRearhDao == null){
+            recentRearhDao = getDao(RecentSearch.class);
+        }
+        return recentRearhDao;
     }
 }

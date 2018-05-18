@@ -59,6 +59,7 @@ public class User extends BaseVO implements JsonParseble <User>{
 
     private String passwordConfirm;
 
+    private boolean crypedPasswoed;
 
     public User(int id) {
         this.id = id;
@@ -187,8 +188,24 @@ public class User extends BaseVO implements JsonParseble <User>{
         return objectMapper.readValue(String.valueOf(response), User.class);
     }
 
+    public boolean isCrypedPasswoed() {
+        return crypedPasswoed;
+    }
+
+    public void setCrypedPasswoed(boolean crypedPasswoed) {
+        this.crypedPasswoed = crypedPasswoed;
+    }
+
     public boolean isFarmacia() {
         return this.farmacia != null && this.pessoa == null;
+    }
+
+    public void enCryptPassword() {
+        this.setCryptedPassword(this.getPassword());
+    }
+
+    public void deCryptPassword() {
+        this.setPassword(Utilities.MD5DeCrypt(this.getPassword()));
     }
 }
 

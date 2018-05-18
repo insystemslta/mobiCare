@@ -1,19 +1,18 @@
-package mz.co.insystems.mobicare.activities.farmacia;
+package mz.co.insystems.mobicare.activities.search;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.android.volley.Request;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -23,17 +22,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import mz.co.insystems.mobicare.R;
 import mz.co.insystems.mobicare.base.BaseActivity;
-import mz.co.insystems.mobicare.common.RecyclerTouchListener;
-import mz.co.insystems.mobicare.common.SearchResultAdaper;
-import mz.co.insystems.mobicare.common.SearchbleObject;
 import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
 import mz.co.insystems.mobicare.model.farmaco.Farmaco;
+import mz.co.insystems.mobicare.model.search.RecentSearch;
+import mz.co.insystems.mobicare.model.search.Searchble;
 import mz.co.insystems.mobicare.model.user.User;
 import mz.co.insystems.mobicare.sync.MobicareSyncService;
 import mz.co.insystems.mobicare.sync.SyncError;
@@ -48,12 +48,21 @@ public class SearchActivity extends BaseActivity implements Runnable{
     private boolean farmaciaSearchDone;
     private boolean servicoSearchDone;
     private boolean farmacoSearchDone;
-    private  List<SearchbleObject> searchbleObjectList;
-    private RecyclerView recyclerView;
-    private SearchResultAdaper searchResultAdaper;
+    private  List<Searchble> searchbleList;
+
+
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+
+    private SearchFragment searchFragment;
+    private RecentSearchFragment recentSearchFragment;
 
     public SearchActivity() {
-        this.searchbleObjectList  = new ArrayList<>();
+        this.searchbleList = new ArrayList<>();
+        this.searchFragment = new SearchFragment();
+        this.recentSearchFragment = new RecentSearchFragment();
     }
 
     @Override
@@ -61,32 +70,22 @@ public class SearchActivity extends BaseActivity implements Runnable{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
-        setCurrentUser(new User());
-        getCurrentUser().setUserName("844441662");
-        getCurrentUser().setPassword("1000");
+        setCurrentUser((User) getIntent().getSerializableExtra(User.TABLE_NAME));
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initViewHeader();
 
-        searchView = findViewById(R.id.search_view);
-        searchView.setVoiceSearch(true);
-        searchView.setCursorDrawable(R.drawable.color_cursor_white);
-        searchView.setEllipsize(true);
-        //searchView.setSuggestionIcon();
-        //searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+        initSearchViewBar();
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 doSerarch(query);
-                Snackbar.make(findViewById(R.id.container), "Query: " + query, Snackbar.LENGTH_LONG)
-                        .show();
+                saveThisSearch(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
+                //do something
                 return false;
             }
         });
@@ -94,19 +93,66 @@ public class SearchActivity extends BaseActivity implements Runnable{
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-                //Do some magic
+                //loadRecentSearches();
+                openRecentSearchesTab();
             }
 
             @Override
             public void onSearchViewClosed() {
-                //Do some magic
+                tabLayout.getTabAt(0).select();
             }
         });
     }
 
+    private void initViewHeader() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+        viewPager = findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void openRecentSearchesTab() {
+        tabLayout.getTabAt(1).select();
+    }
+
+    private void saveThisSearch(String query) {
+        RecentSearch recentSearch = new RecentSearch(query, Calendar.getInstance().getTime(), getCurrentUser());
+        try {
+            getRecentRearhDao().create(recentSearch);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadRecentSearches() {
+        recentSearchFragment.loadUserRecents(getCurrentUser());
+    }
+
+    private void initSearchViewBar() {
+        searchView = findViewById(R.id.search_view);
+        searchView.setVoiceSearch(true);
+        searchView.setCursorDrawable(R.drawable.color_cursor_white);
+        searchView.setEllipsize(true);
+        //searchView.setSuggestionIcon();
+        //searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(searchFragment, "Search");
+        viewPagerAdapter.addFragment(recentSearchFragment, "Recent");
+        viewPagerAdapter.addFragment(new SavedSearch(), "Saved");
+        viewPager.setAdapter(viewPagerAdapter);
+    }
+
     private void doSerarch(String query) {
         showLoading(SearchActivity.this, null, getString(R.string.searching));
-        this.searchbleObjectList.clear();
+        this.searchbleList.clear();
 
         setSearchQuery(query.trim());
         if (Utilities.isNetworkAvailable(SearchActivity.this)){
@@ -149,7 +195,7 @@ public class SearchActivity extends BaseActivity implements Runnable{
                         if (response.getJSONObject(i).has("message")){
 
                         }else {
-                            searchbleObjectList.add(new Farmaco().fromJsonObject(response.getJSONObject(i)));
+                            searchbleList.add(new Farmaco().fromJsonObject(response.getJSONObject(i)));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -185,7 +231,7 @@ public class SearchActivity extends BaseActivity implements Runnable{
                         if (response.getJSONObject(i).has("message")){
 
                         }else {
-                            searchbleObjectList.add(new Servico().fromJsonObject(response.getJSONObject(i)));
+                            searchbleList.add(new Servico().fromJsonObject(response.getJSONObject(i)));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -221,7 +267,7 @@ public class SearchActivity extends BaseActivity implements Runnable{
                         if (response.getJSONObject(i).has("message")){
 
                         }else {
-                            searchbleObjectList.add(new Farmacia().fromJsonObject(response.getJSONObject(i)));
+                            searchbleList.add(new Farmacia().fromJsonObject(response.getJSONObject(i)));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -278,61 +324,47 @@ public class SearchActivity extends BaseActivity implements Runnable{
     }
 
     @Override
+    public boolean noSyncError() {
+        return false;
+    }
+
+    @Override
+    public boolean syncOperationDone() {
+        return false;
+    }
+
+    @Override
     public void run() {
-        final Uri.Builder uri = service.initServiceUri();
 
         //Implement Limits on data loading
-        searchFarmacia(uri);
-        searchFarmaco(uri);
-        searchServico(uri);
+        searchFarmacia(service.initServiceUri());
+        searchFarmaco(service.initServiceUri());
+        searchServico(service.initServiceUri());
 
         try {
             searchThread.join(2000);
             if (!this.isSearchFinished()) searchThread.join(2000);
             if (!this.isSearchFinished()) searchThread.join(2000);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    displaySearchResults();
+                }
+            });
+
             hideLoading();
-            displaySearchResults();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     private void displaySearchResults() {
-        if (Utilities.listHasElements(this.searchbleObjectList)){
-
-            recyclerView = findViewById(R.id.recycler_view);
-
-            searchResultAdaper = new SearchResultAdaper(searchbleObjectList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-            recyclerView.setAdapter(searchResultAdaper);
-
-            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    SearchbleObject searchbleObject = searchbleObjectList.get(position);
-                    //check instance and procced
-                    if (searchbleObject instanceof Farmacia){
-
-                    }else if (searchbleObject instanceof Servico){
-
-                    }else if (searchbleObject instanceof Farmaco){
-
-                    }
-
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-
-                }
-            }));
-
-            //searchResultAdaper.notifyDataSetChanged();
+        if (Utilities.listHasElements(this.searchbleList)){
+            searchFragment.notifyDataHasChanged();
         }else {
-
+            Utilities.displayCommonAlertDialog(getApplicationContext(), getString(R.string.no_search_results));
         }
     }
 
@@ -370,5 +402,42 @@ public class SearchActivity extends BaseActivity implements Runnable{
 
     public void setFarmacoSearchDone(boolean farmacoSearchDone) {
         this.farmacoSearchDone = farmacoSearchDone;
+    }
+
+    public List<Searchble> getSearchbleList() {
+        return searchbleList;
+    }
+
+    public void setSearchbleList(List<Searchble> searchbleList) {
+        this.searchbleList = searchbleList;
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

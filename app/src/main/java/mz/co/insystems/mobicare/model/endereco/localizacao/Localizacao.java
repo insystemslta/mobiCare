@@ -125,11 +125,15 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
     public void resetLevelThreeData() {
         postoList = new ArrayList<>();
         bairroList = new ArrayList<>();
+        selectedPosto = null;
+        selectedBairro = null;
     }
 
     public void resetLevelTwoData() {
         distritoList = new ArrayList<>();
         municipioList = new ArrayList<>();
+        selectedMunicipio = null;
+        selectedDistrito = null;
     }
 
     @Bindable
@@ -207,7 +211,7 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
                 fragmentView.getCurrentUser().getFarmacia().getEndereco().setPostoAdministrativo(null);
             }else {
                 fragmentView.getCurrentUser().getPessoa().getEndereco().setBairro(this.selectedBairro);
-                fragmentView.getCurrentUser().getFarmacia().getEndereco().setPostoAdministrativo(null);
+                fragmentView.getCurrentUser().getPessoa().getEndereco().setPostoAdministrativo(null);
             }
             notifyPropertyChanged(BR.selectedBairro);
         }
@@ -410,7 +414,7 @@ public class Localizacao extends BaseVO implements LocalizacaoSync {
 
     @Override
     public void syncBairros() {
-        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Distrito.TABLE_NAME_DISTRITO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
+        getService().makeJsonArrayRequest(Request.Method.GET, currentActivity.buildGetAllUrlString(Bairro.TABLE_NAME_BAIRRO), null, currentActivity.getCurrentUser(), new VolleyResponseListener() {
             @Override
             public void onError(SyncError error) {
                 onSyncError(Distrito.TABLE_NAME_DISTRITO, null);

@@ -14,7 +14,9 @@ import mz.co.insystems.mobicare.model.endereco.postoadministrativo.PostoAdminist
 import mz.co.insystems.mobicare.model.endereco.provincia.Provincia;
 import mz.co.insystems.mobicare.model.farmacia.Farmacia;
 import mz.co.insystems.mobicare.model.farmacia.servicos.Servico;
+import mz.co.insystems.mobicare.model.farmaco.Farmaco;
 import mz.co.insystems.mobicare.model.pessoa.Pessoa;
+import mz.co.insystems.mobicare.model.search.RecentSearch;
 import mz.co.insystems.mobicare.model.user.User;
 
 /**
@@ -34,7 +36,9 @@ public class DatabaseConfigUtil extends OrmLiteConfigUtil {
             Municipio.class,
             PostoAdministrativo.class,
             Bairro.class,
-            Servico.class
+            Servico.class,
+            Farmaco.class,
+            RecentSearch.class
     };
 
     public static void main(String[] args) throws SQLException, IOException {

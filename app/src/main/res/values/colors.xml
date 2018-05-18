@@ -33,4 +33,12 @@
     <color name="theme_secondary_text_inverted">#8affffff</color>
     <color name="theme_icons">#FFFFFF</color>
     <color name="theme_divider">#B6B6B6</color>
+    <color name="title">#222222</color>
+    <color name="year">#999999</color>
+
+    <color name="text_color">#131715</color>
+    <color name="white">#ffffff</color>
+
+    <color name="search_items">#abf1cf</color>
+    <color name="tab_bar">#057a41</color>
 </resources>

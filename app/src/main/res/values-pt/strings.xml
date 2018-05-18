@@ -41,6 +41,11 @@
     <string name="passwords_not_match">Informed password does not match, please check!</string>
     <string name="user_name_short">Please make sure the user name has at lest four carateres!</string>
     <string name="passwords_short">Please make sure your password has at lest four carateres!</string>
-    <string name="search_what_you_want">Search what you want!</string>
+    <string name="search_what_you_want">mobiCare</string>
     <string name="searching">Searching...</string>
+    <string name="no_search_results">No results for your search!</string>
+    <string name="sync_time_out">Sync failed due to time out</string>
+    <string name="loading_user_data">Loading user data, please wait...</string>
+    <string name="internet_not_available">Internet not available, check your connection settings.</string>
+    <string name="checking_credential">Checking your credentials...</string>
 </resources>
